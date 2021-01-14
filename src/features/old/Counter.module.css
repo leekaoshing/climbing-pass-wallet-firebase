@@ -9,7 +9,7 @@
 }
 
 .value {
-  font-size: 78px;
+  font-size: 16px;
   padding-left: 16px;
   padding-right: 16px;
   margin-top: 2px;
@@ -35,7 +35,7 @@
 .textbox {
   font-size: 32px;
   padding: 2px;
-  width: 64px;
+  width: 256px;
   text-align: center;
   margin-right: 8px;
 }
