@@ -18,7 +18,7 @@ import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import ReplayIcon from '@material-ui/icons/Replay';
+
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
@@ -67,9 +67,6 @@ export function UserDetails() {
                         <Paper className={classes.paper} elevation={2}>
                             {user['firstName'] + ' ' + user['lastName'] + ' ('}<i>{user['username']}</i>{')'}
                         </Paper>
-                        <IconButton aria-label="incrementPass" onClick={() => dispatch(resetUser())}>
-                            <ReplayIcon />
-                        </IconButton>
                     </ListItem>
                     {   
                         user !== null && user['passes'] !== null ?
