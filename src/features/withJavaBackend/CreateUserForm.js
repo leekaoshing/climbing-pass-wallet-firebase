@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     createUser,
-    fetchUserByUsername, selectCreateUserError,
+    fetchUserByDisplayName, selectCreateUserError,
     selectIsLoadingCreateUser,
     selectShowCreateUserDialog,
     selectSuccessfullyCreatedUser,
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const newUserTemplate = {
-    username: '',
+    displayName: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -46,7 +46,7 @@ export function CreateUserForm() {
     const successfullyCreatedUser = useSelector(selectSuccessfullyCreatedUser);
 
     const [newUser, setNewUser] = useState(newUserTemplate);
-    const [usernameError, setUsernameError] = useState('');
+    const [displayNameError, setDisplayNameError] = useState('');
     const [firstNameError, setFirstNameError] = useState('');
     const [lastNameError, setLastNameError] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -66,18 +66,18 @@ export function CreateUserForm() {
         dispatch(setSuccessfullyCreatedUser(false));
         dispatch(setShowCreateUserDialog(false));
         if (successfullyCreatedUser) {
-            dispatch(fetchUserByUsername(newUser.username));
+            dispatch(fetchUserByDisplayName(newUser.displayName));
             dispatch(setSuccessfullyCreatedUser(false));
             setNewUser(newUserTemplate);
         }
     }
 
-    const handleUsernameChange = (event) => {
-        const username = event.target.value;
-        validateUsername(username);
+    const handleDisplayNameChange = (event) => {
+        const displayName = event.target.value;
+        validateDisplayName(displayName);
         setNewUser({
             ...newUser,
-            username
+            displayName
         })
     }
 
@@ -127,13 +127,13 @@ export function CreateUserForm() {
         }
     }
 
-    const validateUsername = username => {
-        if (username === '') {
-            setUsernameError("Username cannot be blank.");
-        } else if (!username.match(/^[a-zA-Z0-9_]*$/g)) {
-            setUsernameError("Alphanumeric characters and underscores only.");
+    const validateDisplayName = displayName => {
+        if (displayName === '') {
+            setDisplayNameError("DisplayName cannot be blank.");
+        } else if (!displayName.match(/^[a-zA-Z0-9_]*$/g)) {
+            setDisplayNameError("Alphanumeric characters and underscores only.");
         } else {
-            setUsernameError('');
+            setDisplayNameError('');
         }
     }
 
@@ -172,12 +172,12 @@ export function CreateUserForm() {
                 }
                 <Paper className={classes.paper} elevation={0}>
                     <TextField
-                        error={usernameError !== ''}
-                        label="Username"
-                        helperText={usernameError}
+                        error={displayNameError !== ''}
+                        label="DisplayName"
+                        helperText={displayNameError}
                         variant="outlined"
-                        value={newUser.username}
-                        onChange={handleUsernameChange}
+                        value={newUser.displayName}
+                        onChange={handleDisplayNameChange}
                     />
                     <br />
                     <br />
@@ -219,7 +219,7 @@ export function CreateUserForm() {
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Success! &nbsp;<DoneIcon /></div>
                                 :
                                 <Button
-                                    disabled={usernameError !== '' && firstNameError !== '' && lastNameError !== '' && emailError !== ''}
+                                    disabled={displayNameError !== '' && firstNameError !== '' && lastNameError !== '' && emailError !== ''}
                                     aria-label="submitNewUser"
                                     variant="contained"
                                     color="primary"

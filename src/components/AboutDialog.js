@@ -42,6 +42,9 @@ export function AboutDialog() {
                     If there is sufficient community adoption, our next step would be to approach the various gyms to link this to their databases for
                     automatic updating of passes. Do share this site with your friends to help out!
                 </p>
+                <p style={{ textAlign: 'justify' }}>
+                    For any enquiries, please email <a href = "mailto: climbingpasswallet@gmail.com">climbingpasswallet@gmail.com</a>. Happy sending!
+                </p>
             </Paper>
             <DialogActions>
                 <Button

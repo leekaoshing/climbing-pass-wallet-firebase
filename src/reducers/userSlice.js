@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 const axios = require('axios');
 
-export const fetchUserByUsername = createAsyncThunk(
-  'users/fetchByUsernameStatus',
-  async (username, { rejectWithValue }) => {
+export const fetchUserByDisplayName = createAsyncThunk(
+  'users/fetchByDisplayNameStatus',
+  async (displayName, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://192.168.1.19:8081/api/user/${encodeURIComponent(username.toLowerCase())}`);
+      const response = await axios.get(`http://192.168.1.19:8081/api/user/${encodeURIComponent(displayName.toLowerCase())}`);
       return response.data;
     } catch (err) {
       if (err.response === undefined) {
@@ -21,7 +21,7 @@ export const createUser = createAsyncThunk(
   'users/createUserStatus',
   async (newUser, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`http://192.168.1.19:8081/api/user/${encodeURIComponent(newUser.username.toLowerCase())}`, newUser);
+      const response = await axios.post(`http://192.168.1.19:8081/api/user/${encodeURIComponent(newUser.displayName.toLowerCase())}`, newUser);
       return response.data;
     } catch (err) {
       if (err.response === undefined) {
@@ -37,7 +37,7 @@ export const updateUser = createAsyncThunk(
   'users/updateUserStatus',
   async (updatedUser, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://192.168.1.19:8081/api/user/${encodeURIComponent(updatedUser.username.toLowerCase())}`, updatedUser);
+      const response = await axios.put(`http://192.168.1.19:8081/api/user/${encodeURIComponent(updatedUser.displayName.toLowerCase())}`, updatedUser);
       return response.data;
     } catch (err) {
       if (err.response === undefined) {
@@ -141,13 +141,13 @@ export const userSlice = createSlice({
   },
   extraReducers: {
     // Add reducers for additional action types here, and handle loading state as needed
-    [fetchUserByUsername.pending]: (state, action) => {
+    [fetchUserByDisplayName.pending]: (state, action) => {
       state.fetchUserError = null;
       if (state.loadingUser === false) {
         state.loadingUser = true
       }
     },
-    [fetchUserByUsername.fulfilled]: (state, action) => {
+    [fetchUserByDisplayName.fulfilled]: (state, action) => {
       const user = action.payload;
       if (user.passes === undefined) {
         user.passes = {};
@@ -157,7 +157,7 @@ export const userSlice = createSlice({
       state.databaseUser = user;
       state.currentUser = user;
     },
-    [fetchUserByUsername.rejected]: (state, action) => {
+    [fetchUserByDisplayName.rejected]: (state, action) => {
       if (state.loadingUser === true) {
         state.loadingUser = false
         state.fetchUserError = action.payload

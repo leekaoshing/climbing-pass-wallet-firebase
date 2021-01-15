@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+// import {
+//     decrementPass,
+//     // differentiateUserPasses,
+//     incrementPass,
+//     selectUser,
+//     selectDatabaseUser,
+//     resetUser,
+// } from '../../reducers/userSlice';
+// import {
+//     fetchGyms,
+//     // selectGyms,
+// } from './gymSlice';
 import {
-    decrementPass,
-    differentiateUserPasses,
-    incrementPass,
-    selectUser,
-    selectDatabaseUser,
-    resetUser,
-} from '../../reducers/userSlice';
+    findPassDifferences as findPassDifferences
+} from '../actions/actions';
 import {
-    fetchGyms,
     selectGyms,
-} from './gymSlice';
+    selectLoggedInUser
+} from '../selectors/firebase';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -42,11 +49,15 @@ const useStyles = makeStyles((theme) => ({
 export function UserDetails() {
     const dispatch = useDispatch();
 
-    const databaseUser = useSelector(selectDatabaseUser);
-    const user = useSelector(selectUser);
+    const user = useSelector(selectLoggedInUser);
     const gyms = useSelector(selectGyms);
 
-    const passDifferences = databaseUser === null ? {} : differentiateUserPasses(databaseUser, user);
+    const [passes, setPasses] = useState(user.passes);
+    console.log('user details passes', passes);
+    const [updatedPasses, setUpdatedPasses] = useState(passes);
+    console.log('updated passes', updatedPasses);
+
+    const passDifferences = findPassDifferences(passes, updatedPasses);
 
     const getTextStyle = (gym) => {
         if (passDifferences[gym] !== undefined) {
@@ -55,9 +66,25 @@ export function UserDetails() {
         return { fontSize: '14px' };
     }
 
+    const incrementPass = gym => {
+        setUpdatedPasses({
+            ...updatedPasses,
+            [gym]: updatedPasses[gym] + 1
+        })
+        console.log('increment')
+    }
+
+    const decrementPass = gym => {
+        if (updatedPasses[gym] > 0) {
+            setUpdatedPasses({
+                ...updatedPasses,
+                [gym]: updatedPasses[gym] + 1
+            })
+        }
+    }
+
     const classes = useStyles();
     var counter = 0;
-    console.log('otan', user.passes.size)
 
     return (
         user !== null ?
@@ -65,13 +92,13 @@ export function UserDetails() {
                 <List>
                     <ListItem style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Paper className={classes.paper} elevation={2}>
-                            {user['firstName'] + ' ' + user['lastName'] + ' ('}<i>{user['displayName']}</i>{')'}
+                            <span>{`${user.firstName} ${user.lastName}`} &nbsp; ({<i>{user.displayName}</i>})</span>
                         </Paper>
                     </ListItem>
                     {   
-                        user !== null && user['passes'] !== null ?
-                            Object.keys(user['passes']).length !== 0 ?
-                                Object.keys(user['passes'])
+                        passes !== null ?
+                            Object.keys(passes).length !== 0 ?
+                                Object.keys(passes)
                                     .sort()
                                     .map(gym => {
                                         counter += 1;
@@ -88,15 +115,15 @@ export function UserDetails() {
                                                         <span style={{ fontSize: '12px' }}>{gyms.find(g => g.id === gym)['name']}</span>
                                                     </Grid>
                                                     <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <IconButton aria-label="decrementPass" onClick={() => dispatch(decrementPass(gym))}>
+                                                        <IconButton aria-label="decrementPass" onClick={() => decrementPass(gym)}>
                                                             <RemoveIcon />
                                                         </IconButton>
                                                     </Grid>
                                                     <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <span style={getTextStyle(gym)}>{user['passes'][gym]}</span>
+                                                        <span style={getTextStyle(gym)}>{passes[gym]}</span>
                                                     </Grid>
                                                     <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <IconButton aria-label="incrementPass" onClick={() => dispatch(incrementPass(gym))}>
+                                                        <IconButton aria-label="incrementPass" onClick={() => incrementPass(gym)}>
                                                             <AddIcon />
                                                         </IconButton>
                                                     </Grid>

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   addGymToUser,
   decrementPass,
-  fetchUserByUsername,
+  fetchUserByDisplayName,
   incrementPass,
   requestConfirmation,
   resetUser,
@@ -36,17 +36,35 @@ import Button from '@material-ui/core/Button';
 import ReplayIcon from '@material-ui/icons/Replay';
 import SaveIcon from '@material-ui/icons/Save';
 
-import { useHistory } from "react-router-dom"; // TODO remove
+import { useFirestoreConnect } from "react-redux-firebase";
 
 export function Passes() {
   const dispatch = useDispatch();
-  const history = useHistory(); // TODO remove
 
-  useEffect(() => {
-    if (gyms.length === 0) {
-      dispatch(fetchGyms());
-    }
-  }, [])
+  // const auth = useSelector((state) => state.firebase.auth);
+
+  // // Add user to redux store
+  // useFirestoreConnect([
+  //   {
+  //     collection: 'users',
+  //     doc: auth.uid
+  //   }
+  // ])
+  // const user = useSelector(
+  //   ({ firestore: { data } }) => data.users && data.users[auth.uid]
+  // )
+  // console.log('firestore user', user);
+  // // TODO Load initial passes state into another variable for changes
+
+  // // Add gyms to redux store
+  // useFirestoreConnect(['gyms'])
+  // const gyms = useSelector((state) => state.firestore.data.gyms)
+  // console.log('firestore gyms', gyms)
+
+  
+  // const [newPasses, setNewPasses] = useState(user.passes);
+  
+
 
   const user = useSelector(selectUser);
   const databaseUser = useSelector(selectDatabaseUser);
@@ -63,8 +81,6 @@ export function Passes() {
       &nbsp; &nbsp;
         <CreateUserForm />
       </header>
-
-      <button onClick={() => history.push('/login')}>login</button>  {/*TODO remove*/}
 
       <UserSearch />
       {

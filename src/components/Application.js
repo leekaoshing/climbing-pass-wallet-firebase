@@ -1,27 +1,28 @@
 import Container from '@material-ui/core/Container';
 import React from "react";
 import { useSelector } from 'react-redux';
-import { Passes } from '../features/withJavaBackend/Passes';
+import { Passes } from './Passes';
 import { selectUser } from '../reducers/userSlice';
-import { auth, getUser } from '../services/firebase';
+import { isLoaded, isEmpty } from 'react-redux-firebase';
 import { AboutDialog } from './AboutDialog';
 import { Login } from './Login';
 import { LoginWrapper } from './LoginWrapper';
 import { NavBar } from './NavBar';
 import { SignUp } from './SignUp';
+import { selectFirestoreAuth } from '../selectors/firebase';
 
 export function Application() {
-    const user = null;
-    // console.log('application user', user);
-    console.log('firebasejs auth', auth);
+    // const user = null;
+    // // console.log('application user', user);
+    // console.log('firebasejs auth', auth);
 
-    const reduxauth = useSelector(state => state.firebase.auth);
-    console.log('application auth', reduxauth);
+    // const reduxauth = useSelector(state => state.firebase.auth);
+    // console.log('application auth', reduxauth);
 
-    auth.onAuthStateChanged(async userAuth => {
-        const user2 = await getUser(userAuth);
-        console.log('application getuser', user2);
-    });
+    // auth.onAuthStateChanged(async userAuth => {
+    //     const user2 = await getUser(userAuth);
+    //     console.log('application getuser', user2);
+    // });
 
     // const user = useSelector(selectUser);
     // if (!user) {
@@ -32,6 +33,7 @@ export function Application() {
     //     });
     // }
 
+    const auth = useSelector((state) => state.firebase.auth);
     return (
         <Container maxWidth="xs">
             <NavBar />
@@ -39,7 +41,7 @@ export function Application() {
             <Login />
             <SignUp />
             {
-                user ?
+                isLoaded(auth) && !isEmpty(auth) ?
                     <Passes />
                     :
                     <LoginWrapper />

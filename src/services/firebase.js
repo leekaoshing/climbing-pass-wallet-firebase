@@ -36,7 +36,8 @@ export const signInWithGoogle = () => {
 
 export const generateUserDocument = async (user, additionalData) => {
     if (!user) return;
-
+    console.log('generate user document', additionalData);
+    console.log('generate user document user', user);
     const userRef = firestore.doc(`users/${user.uid}`);
     const snapshot = await userRef.get();
 
@@ -54,11 +55,11 @@ export const generateUserDocument = async (user, additionalData) => {
     return getUserDocument(user.uid);
 };
 
-// export const getEmailFromUsername = async (username) => {
-//     if (!username) return;
+// export const getEmailFromDisplayName = async (displayName) => {
+//     if (!displayName) return;
 
 //     const usersCollectionRef = firestore.collection('users');
-//     const user = await usersCollectionRef.where('username', '==', username) // TODO Problem: not allowed to look for users if user is not signed in, since users will only be allowed to see their own data
+//     const user = await usersCollectionRef.where('displayName', '==', displayName) // TODO Problem: not allowed to look for users if user is not signed in, since users will only be allowed to see their own data
 //         .get()
 //         .then(results => {
 //             if (!results.empty) {
@@ -67,7 +68,7 @@ export const generateUserDocument = async (user, additionalData) => {
 //             return null;
 //         })
 //         .catch(error => {
-//             console.error('Unable to check if user \'' + additionalData.username + '\' exists: ', error); // TODO handle here, throw to user
+//             console.error('Unable to check if user \'' + additionalData.displayName + '\' exists: ', error); // TODO handle here, throw to user
 //     })
 
 //     // if (user !== null) {
@@ -81,9 +82,9 @@ export const getUser = async (user) => {
     return getUserDocument(user.uid);
 }
 
-export const isUsernameTaken = async (username) => {
-    if (!username) return;
-    return await firestore.collection('users').where('username', '==', username)
+export const isDisplayNameTaken = async (displayName) => {
+    if (!displayName) return;
+    return await firestore.collection('users').where('displayName', '==', displayName)
         .get()
         .then(results => {
             if (!results.empty) {

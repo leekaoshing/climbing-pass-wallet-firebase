@@ -116,7 +116,7 @@ export function PasswordResetDialog() {
                         :
                         emailHasBeenSent ?
                             <Paper className={classes.paper} elevation={0}>
-                                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Success! Please check your inbox (including junk folders). &nbsp;<DoneIcon /></span>
+                                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Success! Please check your inbox (including junk folders).</span>
                             </Paper>
                             :
                             <Button

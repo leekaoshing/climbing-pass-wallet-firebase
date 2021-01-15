@@ -56,15 +56,15 @@ export function Login() {
     };
 
     const handleSubmit = () => {
-        // TODO Cannot sign in by username yet, see getEmailFromUsername() in firebase.js
+        // TODO Cannot sign in by displayName yet, see getEmailFromDisplayName() in firebase.js
         // if (identifier.match(/^\S+@\S+[\.][0-9a-z]+$/g)) {
         //     auth.signInWithEmailAndPassword(identifier, password).catch(error => {
         //         setError("Error signing in with password and email!");
         //         console.error("Error signing in with password and email", error);
         //     });
         // } else {
-        //     email = getEmailFromUsername(identifier);
-        //     auth.signInWithEmailAndPassword(username, password).catch(error => {
+        //     email = getEmailFromDisplayName(identifier);
+        //     auth.signInWithEmailAndPassword(displayName, password).catch(error => {
         //         setError("Error signing in with password and email!");
         //         console.error("Error signing in with password and email", error);
         //     });

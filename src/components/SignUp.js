@@ -15,7 +15,7 @@ import {
     selectShowCreateUserDialog,
     setShowCreateUserDialog
 } from '../reducers/userSlice';
-import { auth, generateUserDocument, isUsernameTaken } from '../services/firebase';
+import { auth, generateUserDocument, isDisplayNameTaken } from '../services/firebase';
 
 const MINIMUM_USERNAME_LENGTH = 4;
 
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const newUserTemplate = {
-    username: '',
+    displayName: '',
     firstName: '',
     lastName: '',
     email: ''
@@ -47,7 +47,7 @@ export function SignUp() {
     const [newUser, setNewUser] = useState(newUserTemplate);
     const [password, setPassword] = useState('');
 
-    const [usernameError, setUsernameError] = useState('');
+    const [displayNameError, setDisplayNameError] = useState('');
     const [firstNameError, setFirstNameError] = useState('');
     const [lastNameError, setLastNameError] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -60,14 +60,14 @@ export function SignUp() {
 
     const createUserWithEmailAndPasswordHandler = async (newUser, password) => {
         try {
-            if (await isUsernameTaken(newUser.username)) {
-                throw { message: `Username '${newUser.username} is already taken.` };
+            if (await isDisplayNameTaken(newUser.displayName)) {
+                throw { message: `Display Name '${newUser.displayName} is already taken.` };
             }
-            const { user } = await auth.createUserWithEmailAndPassword(newUser.email, password);
+            const { user } = await auth.createUserWithEmailAndPassword(newUser.email, password); // TODO How to set displayName in the firebase auth user?
             const userDocument = await generateUserDocument(user, {
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
-                username: newUser.username,
+                displayName: newUser.displayName,
                 email: newUser.email,
             });
 
@@ -76,7 +76,6 @@ export function SignUp() {
             setSuccess(true);
         }
         catch (error) {
-            console.log('error signing up ', error.message);
             setCreateUserError(error.message);
         }
     };
@@ -105,11 +104,11 @@ export function SignUp() {
 
     const onChangeHandler = event => {
         const { name, value } = event.target;
-        if (name === "username") {
-            validateUsername(value);
+        if (name === "displayName") {
+            validateDisplayName(value);
             setNewUser({
                 ...newUser,
-                username: value
+                displayName: value
             });
         } else if (name === "firstName") {
             validateFirstName(value);
@@ -153,15 +152,15 @@ export function SignUp() {
         }
     }
 
-    const validateUsername = username => {
-        if (username === '') {
-            setUsernameError("Username cannot be blank.");
-        } else if (!username.match(/^[a-zA-Z]*.*$/g)) {
-            setUsernameError("Must start with an alphabet.");
-        } else if (!username.match(/^[a-zA-Z0-9]*$/g)) {
-            setUsernameError("Alphanumeric characters only.");
+    const validateDisplayName = displayName => {
+        if (displayName === '') {
+            setDisplayNameError("Display name cannot be blank.");
+        } else if (!displayName.match(/^[a-zA-Z]*.*$/g)) {
+            setDisplayNameError("Must start with an alphabet.");
+        } else if (!displayName.match(/^[a-zA-Z0-9]*$/g)) {
+            setDisplayNameError("Alphanumeric characters only.");
         } else {
-            setUsernameError('');
+            setDisplayNameError('');
         }
     }
 
@@ -173,11 +172,11 @@ export function SignUp() {
         }
     }
 
-    const validateUsernameOnBlur = () => {
-        if (newUser.username.length < MINIMUM_USERNAME_LENGTH) {
-            setUsernameError(`Username must be at least ${MINIMUM_USERNAME_LENGTH} characters.`);
+    const validateDisplayNameOnBlur = () => {
+        if (newUser.displayName.length < MINIMUM_USERNAME_LENGTH) {
+            setDisplayNameError(`Display name must be at least ${MINIMUM_USERNAME_LENGTH} characters.`);
         } else {
-            setUsernameError('');
+            setDisplayNameError('');
         }
     }
 
@@ -194,8 +193,8 @@ export function SignUp() {
         }
     }
 
-    const errorsExist = usernameError !== '' || firstNameError !== '' || lastNameError !== '' || emailError !== '' || passwordError !== '';
-    const fieldsAreBlank = newUser.username === '' || newUser.firstName === '' || newUser.lastName === '' || newUser.email === '' || password === '';
+    const errorsExist = displayNameError !== '' || firstNameError !== '' || lastNameError !== '' || emailError !== '' || passwordError !== '';
+    const fieldsAreBlank = newUser.displayName === '' || newUser.firstName === '' || newUser.lastName === '' || newUser.email === '' || password === '';
 
     const cannotSubmit = errorsExist || fieldsAreBlank;
 
@@ -213,14 +212,14 @@ export function SignUp() {
                 }
                 <Paper className={classes.paper} elevation={0}>
                     <TextField
-                        error={usernameError !== ''}
-                        label="Username"
-                        name="username"
-                        helperText={usernameError}
+                        error={displayNameError !== ''}
+                        label="Display Name"
+                        name="displayName"
+                        helperText={displayNameError}
                         variant="outlined"
-                        value={newUser.username}
+                        value={newUser.displayName}
                         onChange={onChangeHandler}
-                        onBlur={validateUsernameOnBlur}
+                        onBlur={validateDisplayNameOnBlur}
                     />
                     <br />
                     <br />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    fetchUserByUsername,
+    fetchUserByDisplayName,
     selectFetchUserError,
 } from '../../reducers/userSlice';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,7 +11,7 @@ import { blue } from '@material-ui/core/colors';
 
 export function UserSearch() {
     const dispatch = useDispatch();
-    const [username, setUsername] = useState('');
+    const [displayName, setDisplayName] = useState('');
     const fetchUserError = useSelector(selectFetchUserError);
 
     return (
@@ -19,24 +19,24 @@ export function UserSearch() {
             <TextField
                 error={fetchUserError !== null}
                 id="outlined-error-helper-text"
-                label="Enter username"
+                label="Enter displayName"
                 helperText={fetchUserError}
                 variant="outlined"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
+                value={displayName}
+                onChange={e => setDisplayName(e.target.value)}
                 onKeyDown={e => {
                     if (e.key === 'Enter') {
-                        dispatch(fetchUserByUsername(username))
+                        dispatch(fetchUserByDisplayName(displayName))
                     }
                 }}
             />
             &nbsp; &nbsp;
             <Button
-                disabled={username === ''}
+                disabled={displayName === ''}
                 color="primary"
                 variant="outlined"
                 onClick={() => {
-                    dispatch(fetchUserByUsername(username))
+                    dispatch(fetchUserByDisplayName(displayName))
                 }}
             >
                 Search
