@@ -15,7 +15,7 @@ import {
   selectDatabaseUser,
   differentiateUserPasses,
   showAddGymDialog
-} from './userSlice';
+} from '../../reducers/userSlice';
 import {
   fetchGymById,
   fetchGyms,

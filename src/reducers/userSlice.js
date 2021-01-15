@@ -72,7 +72,14 @@ export const userSlice = createSlice({
     databaseUser: null,
     currentUser: null,
     showAddGymDialog: false,
+
+    passwordResetEmail: '',
+
     showCreateUserDialog: false,
+    showLoginDialog: false,
+    showAboutDialog: false,
+    showPasswordResetDialog: false,
+
     showConfirmation: false,
     showUpdateResult: false,
     successfullyCreatedUser: false,
@@ -113,14 +120,23 @@ export const userSlice = createSlice({
     closeAddGymDialog: (state) => {
       state.showAddGymDialog = false;
     },
-    showCreateUserDialog: (state) => {
-      state.showCreateUserDialog = true;
-    },
-    closeCreateUserDialog: (state) => {
-      state.showCreateUserDialog = false;
+    setShowCreateUserDialog: (state, action) => {
+      state.showCreateUserDialog = action.payload;
     },
     setSuccessfullyCreatedUser: (state, action) => {
       state.successfullyCreatedUser = action.payload;
+    },
+    setShowLoginDialog: (state, action) => {
+      state.showLoginDialog = action.payload;
+    },
+    setShowAboutDialog: (state, action) => {
+      state.showAboutDialog = action.payload;
+    },
+    setShowPasswordResetDialog: (state, action) => {
+      state.showPasswordResetDialog = action.payload;
+    },
+    setPasswordResetEmail: (state, action) => {
+      state.passwordResetEmail = action.payload;
     }
   },
   extraReducers: {
@@ -199,8 +215,13 @@ export const {
   resetUser,
   showAddGymDialog,
   closeAddGymDialog,
-  closeCreateUserDialog,
-  showCreateUserDialog,
+
+  setPasswordResetEmail,
+  setShowCreateUserDialog,
+  setShowLoginDialog,
+  setShowAboutDialog,
+  setShowPasswordResetDialog,
+
   setSuccessfullyCreatedUser
 } = userSlice.actions;
 
@@ -255,8 +276,24 @@ export const selectShowCreateUserDialog = state => {
   return state.user.showCreateUserDialog;
 }
 
+export const selectShowLoginDialog = state => {
+  return state.user.showLoginDialog;
+}
+
 export const selectSuccessfullyCreatedUser = state => {
   return state.user.successfullyCreatedUser;
+}
+
+export const selectShowAboutDialog = state => {
+  return state.user.showAboutDialog;
+}
+
+export const selectShowPasswordResetDialog = state => {
+  return state.user.showPasswordResetDialog;
+}
+
+export const selectPasswordResetEmail = state => {
+  return state.user.passwordResetEmail;
 }
 
 export default userSlice.reducer;

@@ -5,7 +5,7 @@ import {
     closeAddGymDialog,
     selectShowAddGymDialog,
     selectUser
-} from './userSlice';
+} from '../../reducers/userSlice';
 import { makeStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';

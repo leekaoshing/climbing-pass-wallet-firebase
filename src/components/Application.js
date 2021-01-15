@@ -1,30 +1,49 @@
+import Container from '@material-ui/core/Container';
 import React from "react";
-import { Redirect } from 'react-router';
-import { Route, Switch } from 'react-router-dom';
-import { Login } from './Login';
-import { SignUp } from './SignUp';
-import { PasswordReset } from './PasswordReset';
+import { useSelector } from 'react-redux';
 import { Passes } from '../features/withJavaBackend/Passes';
+import { selectUser } from '../reducers/userSlice';
+import { auth, getUser } from '../services/firebase';
+import { AboutDialog } from './AboutDialog';
+import { Login } from './Login';
+import { LoginWrapper } from './LoginWrapper';
+import { NavBar } from './NavBar';
+import { SignUp } from './SignUp';
 
 export function Application() {
     const user = null;
+    // console.log('application user', user);
+    console.log('firebasejs auth', auth);
+
+    const reduxauth = useSelector(state => state.firebase.auth);
+    console.log('application auth', reduxauth);
+
+    auth.onAuthStateChanged(async userAuth => {
+        const user2 = await getUser(userAuth);
+        console.log('application getuser', user2);
+    });
+
+    // const user = useSelector(selectUser);
+    // if (!user) {
+    //     const auth = useSelector(state => state.firebase.auth);
+    //     auth.onAuthStateChanged(async userAuth => {
+    //         const user2 = await getUser(userAuth);
+    //         console.log('application getuser', user2);
+    //     });
+    // }
+
     return (
-        user ?
-            <Passes />
-            :
-            <Switch>
-                {/* <PrivateRoute path='/passes'>
-                <Passes />
-                </PrivateRoute> */}
-                <Route exact path='/' component={Login} />
-                <Route path='/signUp' component={SignUp} />
-                <Route path='/passwordReset' component={PasswordReset} />
-
-
-                {/* <Route exact path='/' component={Passes} /> */}
-                {/* <Route path='/login' component={Login} /> */}
-                <Redirect to='/' />
-            </Switch>
-
+        <Container maxWidth="xs">
+            <NavBar />
+            <AboutDialog />
+            <Login />
+            <SignUp />
+            {
+                user ?
+                    <Passes />
+                    :
+                    <LoginWrapper />
+            }
+        </Container>
     );
 }

@@ -1,8 +1,7 @@
 import React from 'react';
-import UserProvider from './components/UserProvider'
-import { Application } from './components/Application'
 import './App.css';
-
+import { Application } from './components/Application';
+import UserProvider from './components/UserProvider';
 
 function App() {
   return (

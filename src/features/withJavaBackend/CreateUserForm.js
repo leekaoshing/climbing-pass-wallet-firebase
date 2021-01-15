@@ -1,35 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import DoneIcon from '@material-ui/icons/Done';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     createUser,
-    closeCreateUserDialog,
-    selectCreateUserError,
+    fetchUserByUsername, selectCreateUserError,
     selectIsLoadingCreateUser,
     selectShowCreateUserDialog,
     selectSuccessfullyCreatedUser,
     setSuccessfullyCreatedUser,
-    showCreateUserDialog,
-    fetchUserByUsername,
-} from './userSlice';
-import { makeStyles } from '@material-ui/core/styles';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Input from '@material-ui/core/Input';
-import Paper from '@material-ui/core/Paper';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import DoneIcon from '@material-ui/icons/Done';
-import DialogActions from '@material-ui/core/DialogActions';
-import Select from '@material-ui/core/Select';
-import { fetchGyms, selectGyms } from './gymSlice';
+    setShowCreateUserDialog
+} from '../../reducers/userSlice';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -71,12 +59,12 @@ export function CreateUserForm() {
     };
 
     const handleOpen = () => {
-        dispatch(showCreateUserDialog())
+        dispatch(setShowCreateUserDialog(true))
     }
 
     const handleClose = () => {
         dispatch(setSuccessfullyCreatedUser(false));
-        dispatch(closeCreateUserDialog());
+        dispatch(setShowCreateUserDialog(false));
         if (successfullyCreatedUser) {
             dispatch(fetchUserByUsername(newUser.username));
             dispatch(setSuccessfullyCreatedUser(false));

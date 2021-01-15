@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '../features/withJavaBackend/userSlice';
+import userReducer from '../reducers/userSlice';
 import gymReducer from '../features/withJavaBackend/gymSlice';
 import {firebaseReducer} from 'react-redux-firebase';
 import {firestoreReducer} from 'redux-firestore';

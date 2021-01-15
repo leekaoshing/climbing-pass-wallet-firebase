@@ -7,7 +7,7 @@ import {
     selectUser,
     selectDatabaseUser,
     resetUser,
-} from './userSlice';
+} from '../../reducers/userSlice';
 import {
     fetchGyms,
     selectGyms,

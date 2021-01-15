@@ -34,26 +34,64 @@ export const signInWithGoogle = () => {
     auth.signInWithPopup(provider);
 };
 
-// Password sign in
 export const generateUserDocument = async (user, additionalData) => {
     if (!user) return;
+
     const userRef = firestore.doc(`users/${user.uid}`);
     const snapshot = await userRef.get();
+
     if (!snapshot.exists) {
-        const { email, displayName, photoURL } = user;
-        try {
+        // try {
             await userRef.set({
-                displayName,
-                email,
-                photoURL,
-                ...additionalData
+                ...additionalData,
+                passes: {}
             });
-        } catch (error) {
-            console.error("Error creating user document", error);
-        }
+        // }
+        // catch (error) {
+        //     throw error;  // TODO handle here, throw to user
+        // }
     }
     return getUserDocument(user.uid);
 };
+
+// export const getEmailFromUsername = async (username) => {
+//     if (!username) return;
+
+//     const usersCollectionRef = firestore.collection('users');
+//     const user = await usersCollectionRef.where('username', '==', username) // TODO Problem: not allowed to look for users if user is not signed in, since users will only be allowed to see their own data
+//         .get()
+//         .then(results => {
+//             if (!results.empty) {
+//                 console.error('user does not exist!') // TODO handle here, throw to user
+//             }
+//             return null;
+//         })
+//         .catch(error => {
+//             console.error('Unable to check if user \'' + additionalData.username + '\' exists: ', error); // TODO handle here, throw to user
+//     })
+
+//     // if (user !== null) {
+//     //     auth.getUserFromUid(user.uid) //.... continue this
+//     //     return Email;
+//     // }
+// }
+
+export const getUser = async (user) => {
+    if (!user) return;
+    return getUserDocument(user.uid);
+}
+
+export const isUsernameTaken = async (username) => {
+    if (!username) return;
+    return await firestore.collection('users').where('username', '==', username)
+        .get()
+        .then(results => {
+            if (!results.empty) {
+                return true;
+            }
+            return false;
+        })
+}
 
 const getUserDocument = async uid => {
     if (!uid) return null;
@@ -64,7 +102,7 @@ const getUserDocument = async uid => {
             ...userDocument.data()
         };
     } catch (error) {
-        console.error("Error fetching user", error);
+        throw error;  // TODO handle here, throw to user
     }
 };
 

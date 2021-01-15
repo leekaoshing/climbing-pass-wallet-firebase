@@ -4,7 +4,7 @@ import {
     closeUpdateResultModal,
     selectShowUpdateResult,
     selectUpdateResult
-} from './userSlice';
+} from '../../reducers/userSlice';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';

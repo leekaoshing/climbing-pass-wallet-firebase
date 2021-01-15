@@ -1,5 +1,5 @@
 import React, { Component, createContext } from 'react';
-import { auth, generateUserDocument } from '../services/firebase';
+import { auth, getUser } from '../services/firebase';
 
 export const UserContext = createContext({ user: null });
 class UserProvider extends Component {
@@ -9,7 +9,8 @@ class UserProvider extends Component {
 
     componentDidMount = async () => {
         auth.onAuthStateChanged(async userAuth => {
-            const user = await generateUserDocument(userAuth);
+            const user = await getUser(userAuth);
+            console.log('user provider mount fetched user', user);
             this.setState({ user });
         });
     };
