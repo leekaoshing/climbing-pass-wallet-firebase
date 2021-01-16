@@ -150,9 +150,6 @@ export function Login() {
                         // :
                         :
                         <div>
-                            <SignUpButton />
-                            &nbsp;
-                            &nbsp;
                             <Button
                                 disabled={cannotSubmit}
                                 aria-label="submitLogIn"
@@ -164,6 +161,9 @@ export function Login() {
                             </Button>
                             <br />
                             <br />
+                            <SignUpButton />
+                            &nbsp;
+                            &nbsp;
                             <Button
                                 aria-label="forgotPassword"
                                 variant="contained"

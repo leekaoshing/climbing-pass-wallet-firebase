@@ -141,7 +141,7 @@ export function SignUpDialog() {
     const validateFirstName = firstName => {
         if (firstName === '') {
             setFirstNameError("First name cannot be blank.");
-        } else if (!firstName.match(/^[a-zA-Z]*$/g)) {
+        } else if (!firstName.match(/^[a-zA-Z ]*$/g)) {
             setFirstNameError("Alphabetical characters only.");
         } else {
             setFirstNameError('');
@@ -151,7 +151,7 @@ export function SignUpDialog() {
     const validateLastName = lastName => {
         if (lastName === '') {
             setLastNameError("Last name cannot be blank.");
-        } else if (!lastName.match(/^[a-zA-Z]*$/g)) {
+        } else if (!lastName.match(/^[a-zA-Z ]*$/g)) {
             setLastNameError("Alphabetical characters only.");
         } else {
             setLastNameError('');
@@ -164,7 +164,7 @@ export function SignUpDialog() {
         } else if (!displayName.match(/^[a-zA-Z]*.*$/g)) {
             setDisplayNameError("Must start with an alphabet.");
         } else if (!displayName.match(/^[a-zA-Z0-9]*$/g)) {
-            setDisplayNameError("Alphanumeric characters only.");
+            setDisplayNameError("Alphanumeric characters only, no spaces.");
         } else {
             setDisplayNameError('');
         }

@@ -41,6 +41,7 @@ export function ConfirmationDialog() {
 
     const onConfirm = () => {
         // dispatch(setIsLoading(true));
+        // TODO need to remove 0 passes
         firestore.collection('users').doc(auth.uid).set(updatedUser, { merge: true })
             .then(() => {
                 dispatch(setUpdateResult(
@@ -63,6 +64,7 @@ export function ConfirmationDialog() {
                 dispatch(setShowUpdateResultDialog(true));
             });
         handleClose();
+        // TODO Gyms with 0 passes should disappear
     }
 
     const getPassDifference = gym => {
