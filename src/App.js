@@ -6,9 +6,9 @@ import UserProvider from './components/UserProvider';
 function App() {
   return (
     <div className='App'>
-      <UserProvider>
+      {/* <UserProvider> */}
         <Application />
-      </UserProvider>
+      {/* </UserProvider> */}
     </div>
   );
 }

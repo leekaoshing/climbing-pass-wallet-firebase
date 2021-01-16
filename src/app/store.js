@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '../reducers/userSlice';
+import { createStore, combineReducers, compose } from 'redux'
+import { firebaseReducer } from 'react-redux-firebase';
+import { firestoreReducer } from 'redux-firestore';
 import gymReducer from '../features/withJavaBackend/gymSlice';
-import {firebaseReducer} from 'react-redux-firebase';
-import {firestoreReducer} from 'redux-firestore';
+import userReducer from '../reducers/userSlice';
 
 // import { createStore, applyMiddleware, compose } from 'redux';
 // import reduxThunk from 'redux-thunk';
@@ -34,6 +35,17 @@ export const rrfConfig = {
 
 //   return store
 // }
+
+// const rootReducer = combineReducers({
+//   user: userReducer,
+//   gym: gymReducer,
+//   firebase: firebaseReducer,
+//   firestore: firestoreReducer
+// })
+
+// // Create store with reducers and initial state
+// const initialState = {}
+// export default createStore(rootReducer, initialState);
 
 export default configureStore({
   reducer: {

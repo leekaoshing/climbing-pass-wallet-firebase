@@ -10,6 +10,7 @@ import { LoginWrapper } from './LoginWrapper';
 import { NavBar } from './NavBar';
 import { SignUp } from './SignUp';
 import { selectFirestoreAuth } from '../selectors/firebase';
+import { Test } from './Test';
 
 export function Application() {
     // const user = null;
@@ -43,6 +44,7 @@ export function Application() {
             {
                 isLoaded(auth) && !isEmpty(auth) ?
                     <Passes />
+                    // <Test />
                     :
                     <LoginWrapper />
             }

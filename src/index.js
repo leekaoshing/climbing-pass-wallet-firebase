@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import './index.css';
-import App from './App';
+import { Application } from './components/Application';
 import store, { rrfConfig } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
@@ -25,7 +25,7 @@ ReactDOM.render(
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
         <Router>
-          <App />
+          <Application />
         </Router>
       </ReactReduxFirebaseProvider>
     </Provider>

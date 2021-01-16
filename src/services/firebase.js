@@ -107,5 +107,13 @@ const getUserDocument = async uid => {
     }
 };
 
+export const signOut = () => {
+    firebase.auth().signOut().then(() => {
+        // Sign-out successful.
+      }).catch((error) => {
+        // An error happened.
+      });
+}
+
 // Finally, export it to use it throughout your app
 export default firebase;

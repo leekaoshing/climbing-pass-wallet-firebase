@@ -1,26 +1,13 @@
 import Button from '@material-ui/core/Button';
 import ReplayIcon from '@material-ui/icons/Replay';
-import SaveIcon from '@material-ui/icons/Save';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFirestoreConnect } from "react-redux-firebase";
 import {
-    differentiateUserPasses, requestConfirmation,
-    resetUser,
-
-
-
-
-
-    selectDatabaseUser, selectIsLoadingUpdateUser, selectIsLoadingUser,
-
-    selectUser,
-
-
-
-    showAddGymDialog
+    resetUser, showAddGymDialog
 } from '../reducers/userSlice';
-import { selectFirestoreAuth, selectGyms, selectUserByUid } from '../selectors/firebase';
+import { selectFirestoreAuth, selectGyms, selectLoggedInUser } from '../selectors/firebase';
+import { signOut } from '../services/firebase';
 // import { AddGymDialog } from './AddGymDialog';
 import { UserDetails } from './UserDetails';
 
@@ -31,52 +18,25 @@ export function Passes() {
 
     const auth = useSelector(selectFirestoreAuth);
     console.log('passes auth', auth);
-    // Add user to redux store
-    useFirestoreConnect([// TODO NOT LOADING DATA IN SUDDENLY
+
+    useFirestoreConnect([
         {
             collection: 'users',
             doc: auth.uid
         },
         {
-            collections: 'gyms'
+            collection: 'gyms'
         }
-    ])
-    // const user = useSelector(state => state.firestore.data.users[auth.uid])
-    // const user = useSelector(
-    //     ({ firestore: { data } }) => data.users && data.users[auth.uid]
-    //   )
-    
-    // console.log('firestore user', user);
+    ]);
 
-    // const users = useSelector(
-    //     ({ firestore: { data } }) => data.users
-    //   )
-    
-    // console.log('firestore users collection', users);
-
-    const data = useSelector(state => state.firestore.data)
-    
-    console.log('firestore data', data);
-
-    // TODO Load initial passes state into another variable for changes
-
-    // Add gyms to redux store
-    // useFirestoreConnect(['gyms'])
-    // const gyms = useSelector(selectGyms)
-    // console.log('firestore gyms', gyms)
+    const gyms = useSelector(selectGyms)
 
 
-    // const [newPasses, setNewPasses] = useState(user.passes);
+    const loggedInUser = useSelector(selectLoggedInUser);
 
+    const isLoaded = loggedInUser && gyms;
 
-
-    // const user = useSelector(selectUser);
-    // const databaseUser = useSelector(selectDatabaseUser);
-    // const isLoadingUser = useSelector(selectIsLoadingUser);
-    // const isLoadingUpdateUser = useSelector(selectIsLoadingUpdateUser);
-    // const gyms = useSelector(selectGyms);
-
-    return (
+    return (isLoaded ?
         <div>
             <div>
                 <UserDetails />
@@ -87,6 +47,13 @@ export function Passes() {
                 >
                     Add gym
                 </Button>
+                <Button
+                    aria-label="signout"
+                    variant="outlined"
+                    onClick={() => signOut()}
+                >
+                    Sign out
+                </Button>
                 {/* <AddGymDialog /> */}
 
                 <br />
@@ -95,13 +62,13 @@ export function Passes() {
                 {/* {isLoadingUpdateUser ?
                     <CircularProgress />
                     : */}
-                    <div>
-                        <Button
-                            variant="outlined"
-                            onClick={() => dispatch(resetUser())}
-                        >
-                            Reset &nbsp; <ReplayIcon />
-                        </Button>
+                <div>
+                    <Button
+                        variant="outlined"
+                        onClick={() => dispatch(resetUser())}
+                    >
+                        Reset &nbsp; <ReplayIcon />
+                    </Button>
                         &nbsp; &nbsp;
                         {/* <Button
                             disabled={Object.keys(differentiateUserPasses(databaseUser, user)).length === 0}
@@ -112,7 +79,7 @@ export function Passes() {
                         >
                             Save changes &nbsp; <SaveIcon />
                         </Button> */}
-                    </div>
+                </div>
                 {/* } */}
                 {/* <ConfirmationDialog /> */}
 
@@ -121,5 +88,6 @@ export function Passes() {
                 <br />
             </div>
         </div>
+        : null
     );
 }

@@ -6,7 +6,9 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { AboutDialogButton } from './AboutDialogButton';
 import { LoginButton } from './LoginButton';
-import { SignUpButton } from './SignupButton';
+import { SignUpButton } from './SignUpButton';
+import { signOut } from '../services/firebase';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,6 +39,13 @@ export function NavBar() {
                             <span>
                                 <SignUpButton />
                                 <LoginButton />
+                                <Button // TODO Fix
+                                    aria-label="signout"
+                                    variant="outlined"
+                                    onClick={() => signOut()}
+                                >
+                                    Sign Out
+                                </Button>
                             </span>
                     }
                 </Toolbar>
