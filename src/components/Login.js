@@ -1,18 +1,16 @@
 import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { selectShowLoginDialog, setPasswordResetEmail, setShowLoginDialog, setShowPasswordResetDialog } from "../reducers/userSlice";
+import { setPasswordResetEmail, setShowPasswordResetDialog } from "../reducers/userSlice";
 import { auth } from '../services/firebase';
 import { PasswordResetDialog } from './PasswordResetDialog';
+import { SignUpButton } from './SignUpButton';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,8 +29,6 @@ export function Login() {
     const history = useHistory();
     const classes = useStyles();
 
-    const showLoginDialog = useSelector(selectShowLoginDialog);
-
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [identifierError, setIdentifierError] = useState('');
@@ -46,13 +42,12 @@ export function Login() {
             .then(() => {
                 setIdentifier('');
                 setPassword('');
-                dispatch(setShowLoginDialog(false));
+                setLoading(false);
             })
             .catch(error => {
-                setLoginError("Error signing in with password and email: " + error.message);
-                console.error("Error signing in with password and email", error);
+                setLoginError(error.message);
+                setLoading(false);
             });
-        setLoading(false);
     };
 
     const handleSubmit = () => {
@@ -73,10 +68,6 @@ export function Login() {
         // TODO add loading icon and error message
         setLoading(true);
         signInWithEmailAndPasswordHandler(identifier, password);
-    }
-
-    const handleClose = () => {
-        dispatch(setShowLoginDialog(false));
     }
 
     const handleForgotPassword = () => {
@@ -114,81 +105,84 @@ export function Login() {
     return (
         <div>
             <PasswordResetDialog />
-            <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={showLoginDialog}>
-                <DialogTitle id="add-gym-dialog-title">Log In</DialogTitle>
+            {/* <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={showLoginDialog}>
+                <DialogTitle id="add-gym-dialog-title">Log In</DialogTitle> */}
+            {
+                loginError !== '' ?
+                    <Paper className={classes.paper} elevation={0}>
+                        <Alert severity="error">{loginError}</Alert>
+                    </Paper>
+                    :
+                    null
+            }
+            <Paper className={classes.paper} elevation={0}>
+                <TextField
+                    error={identifierError !== ''}
+                    label="Email"
+                    name="identifier"
+                    helperText={identifierError}
+                    variant="outlined"
+                    value={identifier}
+                    onChange={onChangeHandler}
+                    onBlur={validateIdentifierOnBlur}
+                />
+                <br />
+                <br />
+                <TextField
+                    error={passwordError !== ''}
+                    label="Password"
+                    name="password"
+                    helperText={passwordError}
+                    variant="outlined"
+                    type="password"
+                    value={password}
+                    onChange={onChangeHandler}
+                    onBlur={validatePasswordOnBlur}
+                />
+            </Paper>
+            <Paper className={classes.submitPaper} elevation={0}>
                 {
-                    loginError !== '' ?
-                        <Paper className={classes.paper} elevation={0}>
-                            <Alert severity="error">{loginError}</Alert>
-                        </Paper>
+                    loading ?
+                        <CircularProgress />
+                        // :
+                        // successfullyCreatedUser ?
+                        // <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Success! &nbsp;<DoneIcon /></div>
+                        // :
                         :
-                        null
+                        <div>
+                            <SignUpButton />
+                            &nbsp;
+                            &nbsp;
+                            <Button
+                                disabled={cannotSubmit}
+                                aria-label="submitLogIn"
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit}
+                            >
+                                Log In
+                            </Button>
+                            <br />
+                            <br />
+                            <Button
+                                aria-label="forgotPassword"
+                                variant="contained"
+                                onClick={handleForgotPassword}
+                            >
+                                Forgot Password?
+                            </Button>
+                        </div>
                 }
-                <Paper className={classes.paper} elevation={0}>
-                    <TextField
-                        error={identifierError !== ''}
-                        label="Email"
-                        name="identifier"
-                        helperText={identifierError}
-                        variant="outlined"
-                        value={identifier}
-                        onChange={onChangeHandler}
-                        onBlur={validateIdentifierOnBlur}
-                    />
-                    <br />
-                    <br />
-                    <TextField
-                        error={passwordError !== ''}
-                        label="Password"
-                        name="password"
-                        helperText={passwordError}
-                        variant="outlined"
-                        type="password"
-                        value={password}
-                        onChange={onChangeHandler}
-                        onBlur={validatePasswordOnBlur}
-                    />
-                </Paper>
-                <Paper className={classes.submitPaper} elevation={0}>
-                    {
-                        loading ?
-                            <CircularProgress />
-                            // :
-                            // successfullyCreatedUser ?
-                            // <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Success! &nbsp;<DoneIcon /></div>
-                            // :
-                            :
-                            <div>
-                                <Button
-                                    disabled={cannotSubmit}
-                                    aria-label="submitLogIn"
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleSubmit}
-                                >
-                                    Log In
-                            </Button>
-                                <br />
-                                <br />
-                                <Button
-                                    aria-label="forgotPassword"
-                                    variant="contained"
-                                    onClick={handleForgotPassword}
-                                >
-                                    Forgot Password?
-                            </Button>
-                            </div>
-                    }
-                </Paper>
-                <DialogActions>
+            </Paper>
+            {/* <DialogActions>
                     <Button
                         color="primary"
                         onClick={handleClose}
                     >
                         Close
                     </Button>
-                </DialogActions>
-            </Dialog>
+                </DialogActions> */}
+            {/* </Dialog> */}
         </div>
 
         // <div className="mt-8">

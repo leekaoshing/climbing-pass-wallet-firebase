@@ -1,18 +1,19 @@
 import Container from '@material-ui/core/Container';
-import React from "react";
-import { useSelector } from 'react-redux';
-import { Passes } from './Passes';
-import { selectUser } from '../reducers/userSlice';
-import { isLoaded, isEmpty } from 'react-redux-firebase';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
+import { selectGyms, selectLoggedInUser } from '../selectors/firebase';
+import { firestore } from '../services/firebase';
 import { AboutDialog } from './AboutDialog';
 import { Login } from './Login';
-import { LoginWrapper } from './LoginWrapper';
 import { NavBar } from './NavBar';
-import { SignUp } from './SignUp';
-import { selectFirestoreAuth } from '../selectors/firebase';
-import { Test } from './Test';
+import { Passes } from './Passes';
+import { SignUpDialog } from './SignUpDialog';
 
 export function Application() {
+    
+    const dispatch = useDispatch();
+    const auth = useSelector((state) => state.firebase.auth);
     // const user = null;
     // // console.log('application user', user);
     // console.log('firebasejs auth', auth);
@@ -34,20 +35,33 @@ export function Application() {
     //     });
     // }
 
-    const auth = useSelector((state) => state.firebase.auth);
+    useFirestoreConnect([
+        {
+            collection: 'users',
+            doc: auth.uid
+        },
+        {
+            collection: 'gyms'
+        }
+    ])
+
+    const loggedInUser = useSelector(selectLoggedInUser);
+    const isReady = isLoaded(auth) && !isEmpty(auth) && loggedInUser;
+
     return (
-        <Container maxWidth="xs">
+        <Container maxWidth="sm" style={{backgroundColor: 'white'}}>
             <NavBar />
             <AboutDialog />
-            <Login />
-            <SignUp />
+            <SignUpDialog />
             {
-                isLoaded(auth) && !isEmpty(auth) ?
+                isReady ?
                     <Passes />
                     // <Test />
                     :
-                    <LoginWrapper />
+                    <Login />
             }
+            <br />
+            <br />
         </Container>
     );
 }

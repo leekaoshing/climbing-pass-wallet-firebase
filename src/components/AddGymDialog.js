@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    addGymToUser,
+    addGymToEditableUser,
     closeAddGymDialog,
+    selectEditableUser,
     selectShowAddGymDialog,
-    selectUser
-} from '../../reducers/userSlice';
+    selectUser,
+    setShowAddGymDialog
+} from '../reducers/userSlice';
 import { makeStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -17,7 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { fetchGyms, selectGyms } from './gymSlice';
+import { selectGyms } from '../selectors/firebase';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -33,16 +35,16 @@ const useStyles = makeStyles((theme) => ({
 export function AddGymDialog() {
     const dispatch = useDispatch();
     const gyms = useSelector(selectGyms);
-    const user = useSelector(selectUser);
+    const user = useSelector(selectEditableUser);
     const showAddGymDialog = useSelector(selectShowAddGymDialog);
 
     const handleSelect = (gymId) => {
-        dispatch(addGymToUser(gymId));
-        dispatch(closeAddGymDialog());
+        dispatch(addGymToEditableUser(gymId));
+        dispatch(setShowAddGymDialog(false));
     };
 
     const handleClose = () => {
-        dispatch(closeAddGymDialog());
+        dispatch(setShowAddGymDialog(false));
     }
 
     return (
@@ -50,11 +52,13 @@ export function AddGymDialog() {
             <DialogTitle id="add-gym-dialog-title">Add new gym:</DialogTitle>
             <List>
                 {
-                    gyms.map(gym => {
-                        if (user.passes != null && !Object.keys(user.passes).includes(gym.id)) {
-                            return <ListItem key={gym.id} button onClick={() => handleSelect(gym.id)}>
-                                <ListItemText primary={gym.name} />
-                            </ListItem>
+                    Object.keys(gyms).map(id => {
+                        if (user.passes != null && !Object.keys(user.passes).includes(id)) {
+                            return (
+                                <ListItem key={id} button onClick={() => handleSelect(id)}>
+                                    <ListItemText primary={gyms[id].name} />
+                                </ListItem>
+                            )
                         }
                     })
                 }

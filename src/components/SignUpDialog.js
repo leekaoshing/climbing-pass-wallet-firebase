@@ -37,7 +37,7 @@ const newUserTemplate = {
     email: ''
 };
 
-export function SignUp() {
+export function SignUpDialog() {
     const dispatch = useDispatch();
     const history = useHistory();
     const classes = useStyles();
@@ -86,6 +86,12 @@ export function SignUp() {
         if (success) {
             clearForm();
         }
+        setDisplayNameError('');
+        setFirstNameError('');
+        setLastNameError('');
+        setEmailError('');
+        setPasswordError('');
+        setCreateUserError('');
         dispatch(setShowCreateUserDialog(false));
     }
 

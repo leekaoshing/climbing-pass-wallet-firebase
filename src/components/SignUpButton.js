@@ -14,8 +14,8 @@ export function SignUpButton() {
 
     return (
         <Button
-            color="inherit"
-            // variant="contained"
+            color="primary"
+            variant="contained"
             onClick={handleOpen}
         >
             Register

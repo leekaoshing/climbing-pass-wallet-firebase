@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 //     // selectGyms,
 // } from './gymSlice';
 import {
-    findPassDifferences as findPassDifferences
+    findPassDifferences
 } from '../actions/actions';
 import {
     selectGyms,
@@ -31,6 +31,7 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { blue } from '@material-ui/core/colors';
+import { selectEditableUser, selectPassDifferences, setEditableUser, setPassDifferences, getPassDifferences } from '../reducers/userSlice';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,84 +47,84 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function UserDetails() {
+export function UserDetails(props) {
     const dispatch = useDispatch();
+    const classes = useStyles();
 
-    const user = useSelector(selectLoggedInUser);
-    const gyms = useSelector(selectGyms);
+    const editableUser = props.user;
+    const gyms = props.gyms;
 
-    const [passes, setPasses] = useState(user.passes);
-    console.log('user details passes', passes);
-    const [updatedPasses, setUpdatedPasses] = useState(passes);
-    console.log('updated passes', updatedPasses);
+    const userInDatabase = useSelector(selectLoggedInUser);
 
-    const passDifferences = findPassDifferences(passes, updatedPasses);
+    // const passDifferences = useSelector(selectPassDifferences);
+    const passDifferences = useSelector(getPassDifferences);
 
     const getTextStyle = (gym) => {
-        if (passDifferences[gym] !== undefined) {
+        if (passDifferences[gym] && passDifferences[gym] !== 0) {
             return { color: blue[600], fontWeight: 'bold', fontSize: '14px' };
         }
         return { fontSize: '14px' };
     }
 
-    const incrementPass = gym => {
-        setUpdatedPasses({
-            ...updatedPasses,
-            [gym]: updatedPasses[gym] + 1
-        })
-        console.log('increment')
-    }
-
-    const decrementPass = gym => {
-        if (updatedPasses[gym] > 0) {
-            setUpdatedPasses({
-                ...updatedPasses,
-                [gym]: updatedPasses[gym] + 1
-            })
+    const changePass = (gym, change) => {
+        const currentPassCount = editableUser.passes[gym];
+        if (currentPassCount === 0 && change < 0) {
+            return;
         }
+        const updatedUser = {
+            ...editableUser,
+            passes: {
+                ...editableUser.passes,
+                [gym]: currentPassCount + change
+            }
+        }
+        const newPassDifferences = findPassDifferences(userInDatabase.passes, updatedUser.passes);
+        dispatch(setPassDifferences(newPassDifferences));
+        dispatch(setEditableUser(updatedUser))
     }
 
-    const classes = useStyles();
     var counter = 0;
 
+    const updatedPasses = editableUser.passes;
+
     return (
-        user !== null ?
+        editableUser !== null ?
             <div className={classes.root}>
                 <List>
                     <ListItem style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Paper className={classes.paper} elevation={2}>
-                            <span>{`${user.firstName} ${user.lastName}`} &nbsp; ({<i>{user.displayName}</i>})</span>
+                            <span>{`${editableUser.firstName} ${editableUser.lastName}`} &nbsp; ({<i>{editableUser.displayName}</i>})</span>
                         </Paper>
                     </ListItem>
-                    {   
-                        passes !== null ?
-                            Object.keys(passes).length !== 0 ?
-                                Object.keys(passes)
+                    {
+                        updatedPasses !== null ?
+                            Object.keys(updatedPasses).length !== 0 ?
+                                Object.keys(updatedPasses)
                                     .sort()
-                                    .map(gym => {
+                                    .map(gymId => {
                                         counter += 1;
-                                        return <div key={gym}>
+                                        return <div key={gymId}>
                                             {counter !== 1 ? <Divider variant="middle" /> : null}
                                             <ListItem style={{ height: '60px' }}>
                                                 <Grid container>
                                                     <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                         <Avatar className={classes.avatar}>
-                                                            {gym}
+                                                            {gymId}
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item xs={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <span style={{ fontSize: '12px' }}>{gyms.find(g => g.id === gym)['name']}</span>
+                                                        <span style={{ fontSize: '12px' }}>{gyms[gymId]['name']}</span>
                                                     </Grid>
                                                     <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <IconButton aria-label="decrementPass" onClick={() => decrementPass(gym)}>
+                                                        <IconButton aria-label="decrementPass" onClick={() => changePass(gymId, -1)}>
                                                             <RemoveIcon />
                                                         </IconButton>
                                                     </Grid>
                                                     <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <span style={getTextStyle(gym)}>{passes[gym]}</span>
+                                                        <span style={getTextStyle(gymId)}>{updatedPasses[gymId]}</span>
                                                     </Grid>
                                                     <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <IconButton aria-label="incrementPass" onClick={() => incrementPass(gym)}>
+                                                        <IconButton aria-label="incrementPass" onClick={() => changePass(gymId, 1)}>
                                                             <AddIcon />
                                                         </IconButton>
                                                     </Grid>
@@ -135,7 +136,6 @@ export function UserDetails() {
                                 <ListItem style={{ height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><b>No passes here yet. Try adding some!</b></ListItem>
                             :
                             null
-
                     }
                 </List>
             </div>

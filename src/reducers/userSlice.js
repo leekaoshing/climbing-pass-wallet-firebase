@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { useSelector } from 'react-redux';
+import { selectLoggedInUser } from '../selectors/firebase';
 const axios = require('axios');
 
 export const fetchUserByDisplayName = createAsyncThunk(
@@ -79,6 +81,11 @@ export const userSlice = createSlice({
     showLoginDialog: false,
     showAboutDialog: false,
     showPasswordResetDialog: false,
+    editableUser: null,
+    passDifferences: {},
+    showConfirmationDialog: false,
+    updateResult: {},
+    showUpdateResultDialog: false,
 
     showConfirmation: false,
     showUpdateResult: false,
@@ -108,23 +115,16 @@ export const userSlice = createSlice({
     closeUpdateResultModal: (state) => {
       state.showUpdateResult = false;
     },
-    addGymToUser: (state, action) => {
-      state.currentUser.passes[action.payload] = 0
-    },
-    resetUser: (state) => {
-      state.currentUser = state.databaseUser;
-    },
-    showAddGymDialog: (state) => {
-      state.showAddGymDialog = true;
-    },
-    closeAddGymDialog: (state) => {
-      state.showAddGymDialog = false;
-    },
     setShowCreateUserDialog: (state, action) => {
       state.showCreateUserDialog = action.payload;
     },
     setSuccessfullyCreatedUser: (state, action) => {
       state.successfullyCreatedUser = action.payload;
+    },
+
+
+    setShowAddGymDialog: (state, action) => {
+      state.showAddGymDialog = action.payload;
     },
     setShowLoginDialog: (state, action) => {
       state.showLoginDialog = action.payload;
@@ -137,6 +137,24 @@ export const userSlice = createSlice({
     },
     setPasswordResetEmail: (state, action) => {
       state.passwordResetEmail = action.payload;
+    },
+    setEditableUser: (state, action) => {
+      state.editableUser = action.payload;
+    },
+    addGymToEditableUser: (state, action) => {
+      state.editableUser.passes[action.payload] = 0
+    },
+    setPassDifferences: (state, action) => {
+      state.passDifferences = action.payload;
+    },
+    setShowConfirmationDialog: (state, action) => {
+      state.showConfirmationDialog = action.payload;
+    },
+    setUpdateResult: (state, action) => {
+      state.updateResult = action.payload;
+    },
+    setShowUpdateResultDialog: (state, action) => {
+      state.showUpdateResultDialog = action.payload;
     }
   },
   extraReducers: {
@@ -205,22 +223,24 @@ export const userSlice = createSlice({
 });
 
 export const {
-  addGymToUser,
+  addGymToEditableUser,
   incrementPass,
   decrementPass,
   requestConfirmation,
   closeConfirmation,
   showUpdateResultModal,
   closeUpdateResultModal,
-  resetUser,
-  showAddGymDialog,
-  closeAddGymDialog,
 
   setPasswordResetEmail,
+  setShowAddGymDialog,
   setShowCreateUserDialog,
-  setShowLoginDialog,
   setShowAboutDialog,
   setShowPasswordResetDialog,
+  setEditableUser,
+  setPassDifferences,
+  setShowConfirmationDialog,
+  setUpdateResult,
+  setShowUpdateResultDialog,
 
   setSuccessfullyCreatedUser
 } = userSlice.actions;
@@ -264,10 +284,6 @@ export const selectShowUpdateResult = state => {
   return state.user.showUpdateResult;
 }
 
-export const selectUpdateResult = state => {
-  return state.user.updateResult;
-}
-
 export const selectShowAddGymDialog = state => {
   return state.user.showAddGymDialog;
 }
@@ -294,6 +310,41 @@ export const selectShowPasswordResetDialog = state => {
 
 export const selectPasswordResetEmail = state => {
   return state.user.passwordResetEmail;
+}
+
+export const selectEditableUser = state => {
+  return state.user.editableUser;
+}
+
+export const selectPassDifferences = state => {
+  return state.user.passDifferences;
+}
+
+export const selectShowConfirmationDialog = state => {
+  return state.user.showConfirmationDialog;
+}
+
+export const selectUpdateResult = state => {
+  return state.user.updateResult;
+}
+
+export const selectShowUpdateResultDialog = state => {
+  return state.user.showUpdateResultDialog;
+}
+
+export const getPassDifferences = state => {
+  const auth = state.firebase.auth;
+  const oldPasses = state.firestore.data.users[auth.uid].passes;
+  const newPasses = state.user.editableUser ? state.user.editableUser.passes : {};
+  
+  const differenceInPasses = {};
+  Object.keys(newPasses).forEach(key => {
+    const oldPassQuantity = oldPasses[key] === undefined ? 0 : oldPasses[key];
+    const newPassQuantity = newPasses[key];
+    const change = newPassQuantity - oldPassQuantity;
+    if (change !== 0) differenceInPasses[key] = newPassQuantity - oldPassQuantity;
+  })
+  return differenceInPasses;
 }
 
 export default userSlice.reducer;
