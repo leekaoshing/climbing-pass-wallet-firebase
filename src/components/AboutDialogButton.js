@@ -15,6 +15,8 @@ export function AboutDialogButton() {
     return (
         <Button
             color="inherit"
+            variant="outlined"
+            size="small"
             onClick={handleOpen}
         >
             About

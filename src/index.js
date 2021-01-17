@@ -1,14 +1,13 @@
+import firebase from 'firebase/app';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from "react-router-dom";
-import './index.css';
-import { Application } from './components/Application';
-import store, { rrfConfig } from './app/store';
 import { Provider } from 'react-redux';
-import * as serviceWorker from './serviceWorker';
-import { createFirestoreInstance } from 'redux-firestore';
-import firebase from 'firebase/app';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import { createFirestoreInstance } from 'redux-firestore';
+import store, { rrfConfig } from './app/store';
+import { Application } from './components/Application';
+import './index.css';
+import * as serviceWorker from './serviceWorker';
 
 export const rrfProps = {
   firebase,
@@ -19,15 +18,11 @@ export const rrfProps = {
 
 ReactDOM.render(
   <React.StrictMode>
-
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
-        <Router>
           <Application />        
-        </Router>
       </ReactReduxFirebaseProvider>
     </Provider>
-
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,4 +1,4 @@
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import { blue } from '@material-ui/core/colors';
 import Divider from '@material-ui/core/Divider';
@@ -100,12 +100,7 @@ export function UserDetails(props) {
                                             {counter !== 1 ? <Divider variant="middle" /> : null}
                                             <ListItem style={{ height: '60px' }}>
                                                 <Grid container>
-                                                    <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        <Avatar className={classes.avatar}>
-                                                            {gymId}
-                                                        </Avatar>
-                                                    </Grid>
-                                                    <Grid item xs={5} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Grid item xs={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                         <span style={{ fontSize: '12px' }}>{gyms[gymId]['name']}</span>
                                                     </Grid>
                                                     <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

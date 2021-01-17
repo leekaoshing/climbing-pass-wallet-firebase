@@ -6,7 +6,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import React from 'react';
-import { firestore } from '../services/firebase';
 import { AboutDialogButton } from './AboutDialogButton';
 import { ProfileMenuButton } from './ProfileMenuButton';
 
@@ -43,17 +42,17 @@ export function NavBar() {
     return (
         <div className={classes.root}>
             <AppBar position="static" elevation={0}>
-                <Toolbar>
+                <Toolbar style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <IconButton edge="start" className={classes.homeButton} color="inherit" aria-label="menu" onClick={() => window.location.reload()}>
                         <HomeIcon />
                     </IconButton>
-                    <Typography variant="button" className={classes.title}>
+                    <Typography variant="body2" className={classes.title}>
                         Climbing Pass Wallet
                     </Typography>
                     <AboutDialogButton />
-                    {/* <Button color="inherit" onClick={addGyms}>Add gyms</Button> */}
-                    &nbsp; &nbsp; &nbsp; &nbsp;
+                        &nbsp;
                     <ProfileMenuButton />
+                    {/* <Button color="inherit" onClick={addGyms}>Add gyms</Button> */}
                 </Toolbar>
             </AppBar>
         </div>
