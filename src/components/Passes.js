@@ -93,7 +93,7 @@ export function Passes() {
                                 variant="outlined"
                                 onClick={requestConfirmation}
                             >
-                                Save changes &nbsp; <SaveIcon />
+                                Save &nbsp; <SaveIcon />
                             </Button>
                         </div>
                 }
