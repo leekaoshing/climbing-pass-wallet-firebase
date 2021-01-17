@@ -1,16 +1,15 @@
+import { CircularProgress } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import React, { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
+import { useCheckMobileScreen } from '../actions/actions';
 import { selectLoggedInUser, selectUsers } from '../selectors/firebase';
 import { AboutDialog } from './AboutDialog';
 import { Login } from './Login';
-import { BottomBar } from './BottomBar';
 import { NavBar } from './NavBar';
 import { Passes } from './Passes';
 import { SignUpDialog } from './SignUpDialog';
-import { CircularProgress } from '@material-ui/core';
-import { useCheckMobileScreen } from '../actions/actions'
 
 const getScreenSize = isMobile => {
     if (isMobile) {
