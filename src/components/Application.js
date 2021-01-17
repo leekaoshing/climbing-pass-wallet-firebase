@@ -1,39 +1,33 @@
 import Container from '@material-ui/core/Container';
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { isEmpty, isLoaded, useFirestoreConnect } from 'react-redux-firebase';
-import { selectGyms, selectLoggedInUser } from '../selectors/firebase';
-import { firestore } from '../services/firebase';
+import { selectLoggedInUser, selectUsers } from '../selectors/firebase';
 import { AboutDialog } from './AboutDialog';
 import { Login } from './Login';
+import { BottomBar } from './BottomBar';
 import { NavBar } from './NavBar';
 import { Passes } from './Passes';
 import { SignUpDialog } from './SignUpDialog';
+import { CircularProgress } from '@material-ui/core';
+import { useCheckMobileScreen } from '../actions/actions'
+
+const getScreenSize = isMobile => {
+    if (isMobile) {
+        return 'xs';
+    } else {
+        return 'sm';
+    }
+}
 
 export function Application() {
-    
-    const dispatch = useDispatch();
     const auth = useSelector((state) => state.firebase.auth);
-    // const user = null;
-    // // console.log('application user', user);
-    // console.log('firebasejs auth', auth);
 
-    // const reduxauth = useSelector(state => state.firebase.auth);
-    // console.log('application auth', reduxauth);
+    const isScreenSizeMobile = useCheckMobileScreen();
 
-    // auth.onAuthStateChanged(async userAuth => {
-    //     const user2 = await getUser(userAuth);
-    //     console.log('application getuser', user2);
-    // });
-
-    // const user = useSelector(selectUser);
-    // if (!user) {
-    //     const auth = useSelector(state => state.firebase.auth);
-    //     auth.onAuthStateChanged(async userAuth => {
-    //         const user2 = await getUser(userAuth);
-    //         console.log('application getuser', user2);
-    //     });
-    // }
+    const [loading, setLoading] = useState(true);
+    const [showUser, setShowUser] = useState(false);
+    const users = useSelector(selectUsers);
 
     useFirestoreConnect([
         {
@@ -46,22 +40,33 @@ export function Application() {
     ])
 
     const loggedInUser = useSelector(selectLoggedInUser);
-    const isReady = isLoaded(auth) && !isEmpty(auth) && loggedInUser;
+    useEffect(() => {
+        setLoading(!isLoaded(auth) || (!isEmpty(auth) && (!users || !Object.keys(users).includes(auth.uid))));
+        setShowUser(loggedInUser);
+    }, [auth, users, loggedInUser])
 
     return (
-        <Container maxWidth="sm" style={{backgroundColor: 'white'}}>
+        <div  style={{ backgroundColor: 'white', height: '100vh', minHeight : '100vh' }}>
             <NavBar />
-            <AboutDialog />
-            <SignUpDialog />
-            {
-                isReady ?
-                    <Passes />
-                    // <Test />
-                    :
-                    <Login />
-            }
-            <br />
-            <br />
-        </Container>
+            <Container maxWidth={getScreenSize(isScreenSizeMobile)}>
+
+                <AboutDialog />
+                <SignUpDialog />
+                {
+                    loading ?
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <br /><br /><br /><br /><br />
+                            <CircularProgress />
+                        </div>
+                        :
+                        showUser ?
+                            <Passes />
+                            :
+                            <Login />
+                }
+                <br />
+                <br />
+            </Container>
+        </div>
     );
 }

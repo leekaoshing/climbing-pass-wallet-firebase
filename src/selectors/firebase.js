@@ -9,6 +9,10 @@ export const selectLoggedInUser = state => {
     return isLoaded(auth) && !isEmpty(auth) && state.firestore.data.users && state.firestore.data.users[auth.uid];
 }
 
+export const selectUsers = state => {
+    return state.firestore.data && state.firestore.data.users;
+}
+
 export const selectFirestoreAuth = state => {
     return state.firebase.auth;
 }

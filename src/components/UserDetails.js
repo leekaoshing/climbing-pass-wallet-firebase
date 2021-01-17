@@ -1,37 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-// import {
-//     decrementPass,
-//     // differentiateUserPasses,
-//     incrementPass,
-//     selectUser,
-//     selectDatabaseUser,
-//     resetUser,
-// } from '../../reducers/userSlice';
-// import {
-//     fetchGyms,
-//     // selectGyms,
-// } from './gymSlice';
+import Avatar from '@material-ui/core/Avatar';
+import CallMadeIcon from '@material-ui/icons/CallMade';
+import { blue } from '@material-ui/core/colors';
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     findPassDifferences
 } from '../actions/actions';
+import { getPassDifferences, setEditableUser, setPassDifferences } from '../reducers/userSlice';
 import {
-    selectGyms,
     selectLoggedInUser
 } from '../selectors/firebase';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import { blue } from '@material-ui/core/colors';
-import { selectEditableUser, selectPassDifferences, setEditableUser, setPassDifferences, getPassDifferences } from '../reducers/userSlice';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: blue[100],
         color: blue[600],
     },
+    buyButton: {
+        color: blue[600],
+    }
 }));
 
 export function UserDetails(props) {
@@ -56,14 +46,17 @@ export function UserDetails(props) {
 
     const userInDatabase = useSelector(selectLoggedInUser);
 
-    // const passDifferences = useSelector(selectPassDifferences);
     const passDifferences = useSelector(getPassDifferences);
 
-    const getTextStyle = (gym) => {
+    const getTextStyle = gym => {
         if (passDifferences[gym] && passDifferences[gym] !== 0) {
             return { color: blue[600], fontWeight: 'bold', fontSize: '14px' };
         }
         return { fontSize: '14px' };
+    }
+
+    const openGymLink = gymId => {
+        window.open(gyms[gymId]['appUrl'] ? gyms[gymId]['appUrl'] : gyms[gymId]['url']);
     }
 
     const changePass = (gym, change) => {
@@ -107,12 +100,12 @@ export function UserDetails(props) {
                                             {counter !== 1 ? <Divider variant="middle" /> : null}
                                             <ListItem style={{ height: '60px' }}>
                                                 <Grid container>
-                                                    <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                         <Avatar className={classes.avatar}>
                                                             {gymId}
                                                         </Avatar>
                                                     </Grid>
-                                                    <Grid item xs={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Grid item xs={5} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                         <span style={{ fontSize: '12px' }}>{gyms[gymId]['name']}</span>
                                                     </Grid>
                                                     <Grid item xs={1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -127,6 +120,11 @@ export function UserDetails(props) {
                                                         <IconButton aria-label="incrementPass" onClick={() => changePass(gymId, 1)}>
                                                             <AddIcon />
                                                         </IconButton>
+                                                    </Grid>
+                                                    <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <IconButton aria-label="buyPasses" onClick={() => openGymLink(gymId)} className={classes.buyButton} variant="contained">
+                                                        <span style={{ fontSize: 8 }}>Buy</span> &nbsp; <CallMadeIcon style={{ fontSize: 8 }}/>
+                                                    </IconButton>    
                                                     </Grid>
                                                 </Grid>
                                             </ListItem>

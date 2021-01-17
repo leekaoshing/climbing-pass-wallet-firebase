@@ -10,7 +10,6 @@ import { createFirestoreInstance } from 'redux-firestore';
 import firebase from 'firebase/app';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 
-
 export const rrfProps = {
   firebase,
   config: rrfConfig,
@@ -18,14 +17,13 @@ export const rrfProps = {
   createFirestoreInstance, //since we are using Firestore
 };
 
-
 ReactDOM.render(
   <React.StrictMode>
 
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
         <Router>
-          <Application />
+          <Application />        
         </Router>
       </ReactReduxFirebaseProvider>
     </Provider>

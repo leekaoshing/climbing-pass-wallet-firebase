@@ -6,14 +6,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import DoneIcon from '@material-ui/icons/Done';
 import Alert from '@material-ui/lab/Alert';
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    selectPasswordResetEmail,
     selectShowPasswordResetDialog,
-    setPasswordResetEmail,
     setShowPasswordResetDialog
 } from '../reducers/userSlice';
 import { auth } from '../services/firebase';
@@ -35,8 +32,7 @@ export function PasswordResetDialog() {
     const classes = useStyles();
     const showPasswordResetDialog = useSelector(selectShowPasswordResetDialog);
 
-    const email = useSelector(selectPasswordResetEmail);
-
+    const [email, setEmail] = useState(''); // TODO Tie to Login email? If use redux store, value is always tied to Login email value, if change and close and reopen, it will reset to the Login email value
     const [emailError, setEmailError] = useState('');
     const [loading, setLoading] = useState(false);
     const [emailHasBeenSent, setEmailHasBeenSent] = useState(false);
@@ -60,13 +56,13 @@ export function PasswordResetDialog() {
     };
 
     const onEmailChange = event => {
-        dispatch(setPasswordResetEmail(event.target.value));
+        setEmail(event.target.value);
     };
 
     const validateEmailOnBlur = () => {
         if (email === '') {
             setEmailError("Email cannot be blank.");
-        } else if (!email.match(/^\S+@\S+[\.][0-9a-z]+$/g)) {
+        } else if (!email.match(/^\S+@\S+[.][0-9a-z]+$/g)) {
             setEmailError("Email in incorrect format.");
         } else {
             setEmailError('');
@@ -77,9 +73,6 @@ export function PasswordResetDialog() {
         setEmailError('');
         setSendEmailError('');
         setLoading('');
-        if (emailHasBeenSent) {
-            dispatch(setPasswordResetEmail('')); // TODO Useless because Login.js will set the Redux state value from its internal state
-        }
         setEmailHasBeenSent(false);
         dispatch(setShowPasswordResetDialog(false));
     }

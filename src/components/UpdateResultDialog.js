@@ -34,11 +34,18 @@ export function UpdateResultDialog() {
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={showUpdateResultDialog}>
             <Paper className={classes.paper} elevation={0} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {
-                    updateResult.message
-                }
-                    &nbsp;
-                {
-                    updateResult.success ? <DoneIcon /> : null
+                    updateResult ?
+                        <div>
+                            {
+                                updateResult.message
+                            }
+                            &nbsp;
+                            {
+                                updateResult.success ? <DoneIcon /> : null
+                            }
+                        </div>
+                        :
+                        null
                 }
             </Paper>
             <DialogActions>

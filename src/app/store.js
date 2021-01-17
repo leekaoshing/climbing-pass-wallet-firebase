@@ -1,8 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { createStore, combineReducers, compose } from 'redux'
 import { firebaseReducer } from 'react-redux-firebase';
-import { firestoreReducer } from 'redux-firestore';
-import gymReducer from '../features/withJavaBackend/gymSlice';
+import { actionTypes, firestoreReducer } from 'redux-firestore';
 import userReducer from '../reducers/userSlice';
 
 // import { createStore, applyMiddleware, compose } from 'redux';
@@ -16,7 +14,13 @@ import userReducer from '../reducers/userSlice';
 export const rrfConfig = {
   userProfile: 'users',
   // attachAuthIsReady: true,
-  useFirestoreForProfile: true
+  useFirestoreForProfile: true,
+  onAuthStateChanged: (authData, firebase, dispatch) => {
+    // Clear redux-firestore state if auth does not exist (i.e logout)
+    if (!authData) {
+      dispatch({ type: actionTypes.CLEAR_DATA })
+    }
+ }
 }
 
 // export default configureStore = () => {
@@ -50,7 +54,6 @@ export const rrfConfig = {
 export default configureStore({
   reducer: {
     user: userReducer,
-    gym: gymReducer,
     firebase: firebaseReducer,
     firestore: firestoreReducer
   },

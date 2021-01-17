@@ -10,7 +10,6 @@ import DoneIcon from '@material-ui/icons/Done';
 import Alert from '@material-ui/lab/Alert';
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from "react-router-dom";
 import {
     selectShowCreateUserDialog,
     setShowCreateUserDialog
@@ -39,7 +38,6 @@ const newUserTemplate = {
 
 export function SignUpDialog() {
     const dispatch = useDispatch();
-    const history = useHistory();
     const classes = useStyles();
 
     const showCreateUserDialog = useSelector(selectShowCreateUserDialog);
@@ -61,18 +59,16 @@ export function SignUpDialog() {
     const createUserWithEmailAndPasswordHandler = async (newUser, password) => {
         try {
             if (await isDisplayNameTaken(newUser.displayName)) {
-                throw { message: `Display Name '${newUser.displayName} is already taken.` };
+                throw new Error(`Display Name '${newUser.displayName} is already taken.`);
             }
             const { user } = await auth.createUserWithEmailAndPassword(newUser.email, password); // TODO How to set displayName in the firebase auth user?
-            const userDocument = await generateUserDocument(user, {
+            await generateUserDocument(user, {
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
                 displayName: newUser.displayName,
                 email: newUser.email,
             });
 
-            // TODO Set user as userDocument
-            console.log('user document in signup', userDocument);
             setSuccess(true);
         }
         catch (error) {
@@ -191,7 +187,7 @@ export function SignUpDialog() {
             const email = newUser.email;
             if (email === '') {
                 setEmailError("Email cannot be blank.");
-            } else if (!email.match(/^\S+@\S+[\.][0-9a-z]+$/g)) {
+            } else if (!email.match(/^\S+@\S+[.][0-9a-z]+$/g)) {
                 setEmailError("Email in incorrect format.");
             } else {
                 setEmailError('');

@@ -5,8 +5,8 @@ import firebase from 'firebase/app';
 // We only want to use Firebase Auth here
 import 'firebase/auth';
 import 'firebase/firestore';
-
-
+import { cloneDeep } from 'lodash';
+import { setEditableUser, setLoadingUpdateUser, setShowUpdateResultDialog, setUpdateResult } from '../reducers/userSlice';
 
 // Your app's Firebase configuration
 const firebaseConfig = {
@@ -29,7 +29,7 @@ if (window.location.hostname === "localhost") {  // Emulator
     auth.useEmulator('http://localhost:9099/');
 }
 
-// Google sign in
+// TODO Use Google sign in
 const provider = new firebase.auth.GoogleAuthProvider();
 export const signInWithGoogle = () => {
     auth.signInWithPopup(provider);
@@ -37,51 +37,31 @@ export const signInWithGoogle = () => {
 
 export const generateUserDocument = async (user, additionalData) => {
     if (!user) return;
-    console.log('generate user document', additionalData);
-    console.log('generate user document user', user);
     const userRef = firestore.doc(`users/${user.uid}`);
     const snapshot = await userRef.get();
 
     if (!snapshot.exists) {
-        // try {
-            await userRef.set({
-                ...additionalData,
-                passes: {}
-            });
-        // }
-        // catch (error) {
-        //     throw error;  // TODO handle here, throw to user
-        // }
+        await userRef.set({
+            ...additionalData,
+            passes: {}
+        });
     }
     return getUserDocument(user.uid);
 };
 
-// export const getEmailFromDisplayName = async (displayName) => {
-//     if (!displayName) return;
-
-//     const usersCollectionRef = firestore.collection('users');
-//     const user = await usersCollectionRef.where('displayName', '==', displayName) // TODO Problem: not allowed to look for users if user is not signed in, since users will only be allowed to see their own data
-//         .get()
-//         .then(results => {
-//             if (!results.empty) {
-//                 console.error('user does not exist!') // TODO handle here, throw to user
-//             }
-//             return null;
-//         })
-//         .catch(error => {
-//             console.error('Unable to check if user \'' + additionalData.displayName + '\' exists: ', error); // TODO handle here, throw to user
-//     })
-
-//     // if (user !== null) {
-//     //     auth.getUserFromUid(user.uid) //.... continue this
-//     //     return Email;
-//     // }
-// }
-
-export const getUser = async (user) => {
-    if (!user) return;
-    return getUserDocument(user.uid);
-}
+const getUserDocument = async uid => {
+    if (!uid) return null;
+    const userDocument = await firestore.doc(`users/${uid}`).get();
+        return {
+            uid,
+            ...userDocument.data()
+        };
+    // try {
+        
+    // } catch (error) {
+    //     throw error;
+    // }
+};
 
 export const isDisplayNameTaken = async (displayName) => {
     if (!displayName) return;
@@ -95,26 +75,51 @@ export const isDisplayNameTaken = async (displayName) => {
         })
 }
 
-const getUserDocument = async uid => {
-    if (!uid) return null;
-    try {
-        const userDocument = await firestore.doc(`users/${uid}`).get();
-        return {
-            uid,
-            ...userDocument.data()
-        };
-    } catch (error) {
-        throw error;  // TODO handle here, throw to user
-    }
-};
-
-export const signOut = () => {
+export const signOut = () => (dispatch, getState) => {
     firebase.auth().signOut().then(() => {
-        // Sign-out successful.
-      }).catch((error) => {
+        window.location.reload();
+    }).catch((error) => {
         // An error happened.
-      });
+    });
 }
 
 // Finally, export it to use it throughout your app
-export default firebase;
+// export default firebase;
+
+export const updateUserInFireStore = () => (dispatch, getState) => {
+    dispatch(setLoadingUpdateUser(true));
+
+    const { user, firebase } = getState();
+    const updatedUser = cloneDeep(user.editableUser);
+    const auth = firebase.auth;
+
+    // Remove gyms with 0 passes
+    Object.keys(updatedUser.passes).forEach(gym => {
+        if (updatedUser.passes[gym] === 0) {
+            delete updatedUser.passes[gym];
+        }
+    })
+
+    firestore.collection('users').doc(auth.uid).set(updatedUser)
+        .then(() => {
+            dispatch(setEditableUser(updatedUser));
+            dispatch(setUpdateResult(
+                {
+                    success: true,
+                    message: 'Successfully updated!'
+                }
+            ))
+        })
+        .catch(error => {
+            dispatch(setUpdateResult(
+                {
+                    success: false,
+                    message: error.message
+                }
+            ));
+        })
+        .finally(() => {
+            dispatch(setLoadingUpdateUser(false));
+            dispatch(setShowUpdateResultDialog(true));
+        });
+}

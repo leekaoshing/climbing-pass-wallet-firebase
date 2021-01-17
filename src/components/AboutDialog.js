@@ -17,6 +17,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const style = { textAlign: 'left' };
+
 export function AboutDialog() {
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -29,19 +31,20 @@ export function AboutDialog() {
     return (
         <Dialog onClose={handleClose} aria-labelledby="about-dialog-title" open={showAboutDialog}>
             <DialogTitle>About</DialogTitle>
-            <Paper className={classes.paper} elevation={0}>
-                <p style={{ textAlign: 'justify' }}>
+            <Paper className={classes.paper} elevation={0} style={style}>
+                {/* TODO Change to typography */}
+                <p>
                     Welcome to the <b>Climbing Pass Wallet</b>! This is a just-for-fun, community-driven project for climbers to keep track of their existing multipasses.
                     No more calling up gyms or logging into different websites just to check your remaining passes :)
                 </p>
-                <p style={{ textAlign: 'justify' }}>
+                <p>
                     Currently, this wallet will require <b>manual recording of passes</b>. Simply create an account (or log in), and add or subtract passes as you buy more passes or visit gyms.
                 </p>
-                <p style={{ textAlign: 'justify' }}>
+                <p>
                     If there is sufficient community adoption, our next step would be to approach the various gyms for links to their databases so the passes are automatically updated. <b>Do 
                         share this site with your friends</b> to help out!
                 </p>
-                <p style={{ textAlign: 'justify' }}>
+                <p>
                     For enquiries, please email <a href = "mailto: climbingpasswallet@gmail.com">climbingpasswallet@gmail.com</a>. Happy sending!
                 </p>
             </Paper>

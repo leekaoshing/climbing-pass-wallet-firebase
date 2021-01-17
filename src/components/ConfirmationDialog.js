@@ -11,9 +11,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useFirestore } from 'react-redux-firebase';
-import { getPassDifferences, selectEditableUser, selectShowConfirmationDialog, setShowConfirmationDialog, setShowUpdateResultDialog, setUpdateResult } from '../reducers/userSlice';
-import { selectFirestoreAuth, selectLoggedInUser } from '../selectors/firebase';
+import { getPassDifferences, selectShowConfirmationDialog, setShowConfirmationDialog } from '../reducers/userSlice';
+import { updateUserInFireStore } from '../services/firebase';
 
 const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -26,13 +25,7 @@ export function ConfirmationDialog() {
     const dispatch = useDispatch();
     const classes = useStyles();
 
-    const firestore = useFirestore();
-
-    const auth = useSelector(selectFirestoreAuth);
-    const userInDatabase = useSelector(selectLoggedInUser);
-    const updatedUser = useSelector(selectEditableUser)
     const showConfirmationDialog = useSelector(selectShowConfirmationDialog);
-    // const passDifferences = useSelector(selectPassDifferences);
     const passDifferences = useSelector(getPassDifferences);
 
     const handleClose = () => {
@@ -40,31 +33,8 @@ export function ConfirmationDialog() {
     }
 
     const onConfirm = () => {
-        // dispatch(setIsLoading(true));
-        // TODO need to remove 0 passes
-        firestore.collection('users').doc(auth.uid).set(updatedUser, { merge: true })
-            .then(() => {
-                dispatch(setUpdateResult(
-                    {
-                        success: true,
-                        message: 'Successfully updated!'
-                    }
-                ))
-            })
-            .catch(error => {
-                dispatch(setUpdateResult(
-                    {
-                        success: false,
-                        message: error.message
-                    }
-                ));
-            })
-            .finally(() => {
-                console.log('finally clause')
-                dispatch(setShowUpdateResultDialog(true));
-            });
+        dispatch(updateUserInFireStore());
         handleClose();
-        // TODO Gyms with 0 passes should disappear
     }
 
     const getPassDifference = gym => {

@@ -1,15 +1,14 @@
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { AboutDialogButton } from './AboutDialogButton';
-import { SignOutButton } from './SignOutButton';
-import { firestore } from '../services/firebase';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
+import React from 'react';
+import { firestore } from '../services/firebase';
+import { AboutDialogButton } from './AboutDialogButton';
+import { ProfileMenuButton } from './ProfileMenuButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,11 +19,10 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         flexGrow: 1,
-    },
+    }
 }));
 
 export function NavBar() {
-    const dispatch = useDispatch();
     const classes = useStyles();
 
     const addGyms = () => { // TODO Remove this temporary function
@@ -44,28 +42,18 @@ export function NavBar() {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar position="static" elevation={0}>
                 <Toolbar>
-                    <IconButton edge="start" className={classes.homeButton} color="inherit" aria-label="menu" onClick={() =>window.location.reload()}>
+                    <IconButton edge="start" className={classes.homeButton} color="inherit" aria-label="menu" onClick={() => window.location.reload()}>
                         <HomeIcon />
                     </IconButton>
                     <Typography variant="button" className={classes.title}>
                         Climbing Pass Wallet
                     </Typography>
                     <AboutDialogButton />
-                    {/* <Button color="inherit" onClick={addGyms}>Add gyms</Button> */}
+                    <Button color="inherit" onClick={addGyms}>Add gyms</Button>
                     &nbsp; &nbsp; &nbsp; &nbsp;
-                    <SignOutButton />
-                    {/* {
-                        user ?
-                            <span>
-                                <Button color="inherit">Home</Button>
-                            </span>
-                            :
-                            <span>
-                                
-                            </span>
-                    } */}
+                    <ProfileMenuButton />
                 </Toolbar>
             </AppBar>
         </div>
