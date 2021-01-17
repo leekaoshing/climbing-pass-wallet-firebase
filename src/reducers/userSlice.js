@@ -53,60 +53,60 @@ export const userSlice = createSlice({
 
 export const {
   addGymToEditableUser,
-  setShowAddGymDialog,
-  setShowCreateUserDialog,
-  setShowAboutDialog,
-  setShowPasswordResetDialog,
   setEditableUser,
-  setPassDifferences,
-  setShowConfirmationDialog,
-  setUpdateResult,
-  setShowUpdateResultDialog,
   setLoadingUpdateUser,
+  setPassDifferences,
+  setShowAboutDialog,
+  setShowAddGymDialog,
+  setShowConfirmationDialog,
+  setShowCreateUserDialog,
+  setShowPasswordResetDialog,
+  setShowUpdateResultDialog,
+  setUpdateResult
 } = userSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
 
-export const selectShowAddGymDialog = state => {
-  return state.user.showAddGymDialog;
-}
-
-export const selectShowCreateUserDialog = state => {
-  return state.user.showCreateUserDialog;
-}
-
-export const selectShowAboutDialog = state => {
-  return state.user.showAboutDialog;
-}
-
-export const selectShowPasswordResetDialog = state => {
-  return state.user.showPasswordResetDialog;
-}
-
 export const selectEditableUser = state => {
   return state.user.editableUser;
+}
+
+export const selectLoadingUpdateUser = state => {
+  return state.user.loadingUpdateUser;
 }
 
 export const selectPassDifferences = state => {
   return state.user.passDifferences;
 }
 
+export const selectShowAboutDialog = state => {
+  return state.user.showAboutDialog;
+}
+
+export const selectShowAddGymDialog = state => {
+  return state.user.showAddGymDialog;
+}
+
 export const selectShowConfirmationDialog = state => {
   return state.user.showConfirmationDialog;
 }
 
-export const selectUpdateResult = state => {
-  return state.user.updateResult;
+export const selectShowCreateUserDialog = state => {
+  return state.user.showCreateUserDialog;
+}
+
+export const selectShowPasswordResetDialog = state => {
+  return state.user.showPasswordResetDialog;
 }
 
 export const selectShowUpdateResultDialog = state => {
   return state.user.showUpdateResultDialog;
 }
 
-export const selectLoadingUpdateUser = state => {
-  return state.user.loadingUpdateUser;
+export const selectUpdateResult = state => {
+  return state.user.updateResult;
 }
 
 export const getPassDifferences = state => {
