@@ -11,7 +11,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPassDifferences, selectShowConfirmationDialog, setShowConfirmationDialog } from '../reducers/userSlice';
+import { selectShowConfirmationDialog, setShowConfirmationDialog } from '../reducers/dialogSlice';
+import { getPassDifferences } from '../reducers/userSlice';
 import { updateUserInFireStore } from '../services/firebase';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,16 +26,17 @@ export function ConfirmationDialog() {
     const dispatch = useDispatch();
     const classes = useStyles();
 
+
     const showConfirmationDialog = useSelector(selectShowConfirmationDialog);
     const passDifferences = useSelector(getPassDifferences);
 
-    const handleClose = () => {
+    const onClose = () => {
         dispatch(setShowConfirmationDialog(false));
     }
 
     const onConfirm = () => {
         dispatch(updateUserInFireStore());
-        handleClose();
+        onClose();
     }
 
     const getPassDifference = gym => {
@@ -47,7 +49,7 @@ export function ConfirmationDialog() {
     }
 
     return (
-        <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={showConfirmationDialog}>
+        <Dialog onClose={onClose} aria-labelledby="simple-dialog-title" open={showConfirmationDialog}>
             <DialogTitle id="update-passes-dialog-title">Confirm changes:</DialogTitle>
             <List>
                 {
@@ -67,7 +69,7 @@ export function ConfirmationDialog() {
             <DialogActions>
                 <Button
                     color="primary"
-                    onClick={handleClose}
+                    onClick={onClose}
                 >
                     No
                     </Button>

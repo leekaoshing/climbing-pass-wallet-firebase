@@ -1,5 +1,4 @@
 // import Avatar from '@material-ui/core/Avatar';
-import CallMadeIcon from '@material-ui/icons/CallMade';
 import { blue } from '@material-ui/core/colors';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
@@ -9,16 +8,11 @@ import ListItem from '@material-ui/core/ListItem';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
+import CallMadeIcon from '@material-ui/icons/CallMade';
 import RemoveIcon from '@material-ui/icons/Remove';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    findPassDifferences
-} from '../actions/actions';
-import { getPassDifferences, setEditableUser, setPassDifferences } from '../reducers/userSlice';
-import {
-    selectLoggedInUser
-} from '../selectors/firebase';
+import { getPassDifferences, setEditableUser } from '../reducers/userSlice';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,8 +37,6 @@ export function UserDetails(props) {
 
     const editableUser = props.user;
     const gyms = props.gyms;
-
-    const userInDatabase = useSelector(selectLoggedInUser);
 
     const passDifferences = useSelector(getPassDifferences);
 
@@ -71,8 +63,6 @@ export function UserDetails(props) {
                 [gym]: currentPassCount + change
             }
         }
-        const newPassDifferences = findPassDifferences(userInDatabase.passes, updatedUser.passes);
-        dispatch(setPassDifferences(newPassDifferences));
         dispatch(setEditableUser(updatedUser))
     }
 

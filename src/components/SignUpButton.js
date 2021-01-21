@@ -3,7 +3,7 @@ import React from "react";
 import { useDispatch } from 'react-redux';
 import {
     setShowCreateUserDialog
-} from '../reducers/userSlice';
+} from '../reducers/dialogSlice';
 
 export function SignUpButton() {
     const dispatch = useDispatch();

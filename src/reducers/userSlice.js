@@ -5,13 +5,6 @@ export const userSlice = createSlice({
   initialState: {
     editableUser: null,
     loadingUpdateUser: false,
-    showAboutDialog: false,
-    showAddGymDialog: false,
-    showConfirmationDialog: false,
-    showCreateUserDialog: false,
-    showLoginDialog: false,
-    showPasswordResetDialog: false,
-    showUpdateResultDialog: false,
     updateResult: null,
   },
   reducers: {
@@ -24,27 +17,6 @@ export const userSlice = createSlice({
     setLoadingUpdateUser: (state, action) => {
       state.loadingUpdateUser = action.payload;
     },
-    setPassDifferences: (state, action) => {
-      state.passDifferences = action.payload;
-    },
-    setShowAboutDialog: (state, action) => {
-      state.showAboutDialog = action.payload;
-    },
-    setShowAddGymDialog: (state, action) => {
-      state.showAddGymDialog = action.payload;
-    },
-    setShowConfirmationDialog: (state, action) => {
-      state.showConfirmationDialog = action.payload;
-    },
-    setShowLoginDialog: (state, action) => {
-      state.showLoginDialog = action.payload;
-    },
-    setShowPasswordResetDialog: (state, action) => {
-      state.showPasswordResetDialog = action.payload;
-    },
-    setShowUpdateResultDialog: (state, action) => {
-      state.showUpdateResultDialog = action.payload;
-    },
     setUpdateResult: (state, action) => {
       state.updateResult = action.payload;
     }
@@ -55,13 +27,6 @@ export const {
   addGymToEditableUser,
   setEditableUser,
   setLoadingUpdateUser,
-  setPassDifferences,
-  setShowAboutDialog,
-  setShowAddGymDialog,
-  setShowConfirmationDialog,
-  setShowCreateUserDialog,
-  setShowPasswordResetDialog,
-  setShowUpdateResultDialog,
   setUpdateResult
 } = userSlice.actions;
 
@@ -75,34 +40,6 @@ export const selectEditableUser = state => {
 
 export const selectLoadingUpdateUser = state => {
   return state.user.loadingUpdateUser;
-}
-
-export const selectPassDifferences = state => {
-  return state.user.passDifferences;
-}
-
-export const selectShowAboutDialog = state => {
-  return state.user.showAboutDialog;
-}
-
-export const selectShowAddGymDialog = state => {
-  return state.user.showAddGymDialog;
-}
-
-export const selectShowConfirmationDialog = state => {
-  return state.user.showConfirmationDialog;
-}
-
-export const selectShowCreateUserDialog = state => {
-  return state.user.showCreateUserDialog;
-}
-
-export const selectShowPasswordResetDialog = state => {
-  return state.user.showPasswordResetDialog;
-}
-
-export const selectShowUpdateResultDialog = state => {
-  return state.user.showUpdateResultDialog;
 }
 
 export const selectUpdateResult = state => {

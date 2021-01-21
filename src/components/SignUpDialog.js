@@ -10,11 +10,12 @@ import DoneIcon from '@material-ui/icons/Done';
 import Alert from '@material-ui/lab/Alert';
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { useFirebase } from 'react-redux-firebase';
 import {
     selectShowCreateUserDialog,
     setShowCreateUserDialog
-} from '../reducers/userSlice';
-import { auth, generateUserDocument, isDisplayNameTaken } from '../services/firebase';
+} from '../reducers/dialogSlice';
+import { generateUserDocument, isDisplayNameTaken } from '../services/firebase';
 
 const MINIMUM_USERNAME_LENGTH = 4;
 
@@ -39,6 +40,7 @@ const newUserTemplate = {
 export function SignUpDialog() {
     const dispatch = useDispatch();
     const classes = useStyles();
+    const firebase = useFirebase();
 
     const showCreateUserDialog = useSelector(selectShowCreateUserDialog);
 
@@ -61,7 +63,7 @@ export function SignUpDialog() {
             if (await isDisplayNameTaken(newUser.displayName)) {
                 throw new Error(`Display Name '${newUser.displayName} is already taken.`);
             }
-            const { user } = await auth.createUserWithEmailAndPassword(newUser.email, password); // TODO How to set displayName in the firebase auth user?
+            const { user } = await firebase.auth().createUserWithEmailAndPassword(newUser.email, password); // TODO How to set displayName in the firebase auth user?
             await generateUserDocument(user, {
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,

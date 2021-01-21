@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
@@ -5,15 +6,14 @@ import ReplayIcon from '@material-ui/icons/Replay';
 import SaveIcon from '@material-ui/icons/Save';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, isLoaded } from 'react-redux-firebase';
-import { getPassDifferences, selectEditableUser, setEditableUser, setShowAddGymDialog, setShowConfirmationDialog, selectLoadingUpdateUser } from '../reducers/userSlice';
-import { selectFirestoreAuth, selectGyms, selectLoggedInUser } from '../selectors/firebase';
-import { firestore } from '../services/firebase';
+import { isEmpty, isLoaded, useFirestore } from 'react-redux-firebase';
+import { setShowAddGymDialog, setShowConfirmationDialog } from '../reducers/dialogSlice';
+import { getPassDifferences, selectEditableUser, selectLoadingUpdateUser, setEditableUser } from '../reducers/userSlice';
+import { selectFirebaseAuth, selectGyms, selectLoggedInUser } from '../selectors/firebase';
 import { AddGymDialog } from './AddGymDialog';
 import { ConfirmationDialog } from './ConfirmationDialog';
 import { UpdateResultDialog } from './UpdateResultDialog';
 import { UserDetails } from './UserDetails';
-import { CircularProgress } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,18 +26,19 @@ const useStyles = makeStyles((theme) => ({
 export function Passes() {
     const dispatch = useDispatch();
     const classes = useStyles();
+    const firestore = useFirestore();
 
-    const auth = useSelector(selectFirestoreAuth);
+    const auth = useSelector(selectFirebaseAuth);
     const userInDatabase = useSelector(selectLoggedInUser);
     const loadingUpdateUser = useSelector(selectLoadingUpdateUser);
 
-    useEffect(() => {
-        if (isLoaded(auth) && !isEmpty(auth)) {
-            firestore.collection('users').doc(auth.uid).get().then(user => {
-                dispatch(setEditableUser(user.data()));
-            });
-        }
-    }, [auth, dispatch])
+    // useEffect(() => {
+    //     if (isLoaded(auth) && !isEmpty(auth)) {
+    //         firestore.collection('users').doc(auth.uid).get().then(user => {
+    //             dispatch(setEditableUser(user.data()));
+    //         });
+    //     }
+    // }, [auth, dispatch, firestore])
 
     const openAddGymDialog = () => {
         dispatch(setShowAddGymDialog(true));

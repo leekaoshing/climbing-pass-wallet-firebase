@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     selectShowAboutDialog,
     setShowAboutDialog
-} from '../reducers/userSlice';
+} from '../reducers/dialogSlice';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -25,8 +25,8 @@ const variant = 'body2';
 export function AboutDialog() {
     const dispatch = useDispatch();
     const classes = useStyles();
-    const showAboutDialog = useSelector(selectShowAboutDialog);
 
+    const showAboutDialog = useSelector(selectShowAboutDialog);
     const handleClose = () => {
         dispatch(setShowAboutDialog(false));
     }
@@ -53,6 +53,7 @@ export function AboutDialog() {
             </Paper>
             <DialogActions>
                 <Button
+                    label="Close"
                     color="primary"
                     onClick={handleClose}
                 >

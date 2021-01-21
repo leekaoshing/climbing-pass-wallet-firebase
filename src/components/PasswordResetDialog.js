@@ -9,11 +9,11 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { useFirebase } from 'react-redux-firebase';
 import {
     selectShowPasswordResetDialog,
     setShowPasswordResetDialog
-} from '../reducers/userSlice';
-import { auth } from '../services/firebase';
+} from '../reducers/dialogSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 export function PasswordResetDialog() {
     const dispatch = useDispatch();
     const classes = useStyles();
+    const firebase = useFirebase();
     const showPasswordResetDialog = useSelector(selectShowPasswordResetDialog);
 
     const [email, setEmail] = useState(''); // TODO Tie to Login email? If use redux store, value is always tied to Login email value, if change and close and reopen, it will reset to the Login email value
@@ -41,7 +42,7 @@ export function PasswordResetDialog() {
     const handleSubmit = () => {
         setEmailError('');
         setLoading(true);
-        auth
+        firebase.auth()
             .sendPasswordResetEmail(email)
             .then(() => {
                 setEmailHasBeenSent(true);

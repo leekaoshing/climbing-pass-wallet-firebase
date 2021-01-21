@@ -1,13 +1,17 @@
 import AppBar from '@material-ui/core/AppBar';
-// import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { AboutDialogButton } from './AboutDialogButton';
 import { ProfileMenuButton } from './ProfileMenuButton';
+import { selectLoggedInUser } from '../selectors/firebase';
+
+// import Button from '@material-ui/core/Button';
+// import { firestore } from '../services/firebase'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,6 +43,8 @@ export function NavBar() {
     //     });
     // }
 
+    const showProfileMenu = useSelector(selectLoggedInUser);
+
     return (
         <div className={classes.root}>
             <AppBar position="static" elevation={0}>
@@ -50,8 +56,12 @@ export function NavBar() {
                         Climbing Pass Wallet
                     </Typography>
                     <AboutDialogButton />
-                        &nbsp;
-                    <ProfileMenuButton />
+                    {
+                        showProfileMenu ?
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&nbsp; <ProfileMenuButton /></div>
+                            :
+                            null
+                    }
                     {/* <Button color="inherit" onClick={addGyms}>Add gyms</Button> */}
                 </Toolbar>
             </AppBar>

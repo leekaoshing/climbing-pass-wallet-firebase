@@ -6,10 +6,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    addGymToEditableUser,
-    selectEditableUser,
     selectShowAddGymDialog,
     setShowAddGymDialog
+} from '../reducers/dialogSlice';
+import {
+    addGymToEditableUser,
+    selectEditableUser
 } from '../reducers/userSlice';
 import { selectGyms } from '../selectors/firebase';
 
@@ -21,7 +23,7 @@ export function AddGymDialog() {
 
     const handleSelect = (gymId) => {
         dispatch(addGymToEditableUser(gymId));
-        dispatch(setShowAddGymDialog(false));
+        handleClose();
     };
 
     const handleClose = () => {

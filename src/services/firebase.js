@@ -6,7 +6,8 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { cloneDeep } from 'lodash';
-import { setEditableUser, setLoadingUpdateUser, setShowUpdateResultDialog, setUpdateResult } from '../reducers/userSlice';
+import { setShowUpdateResultDialog } from '../reducers/dialogSlice';
+import { setEditableUser, setLoadingUpdateUser, setUpdateResult } from '../reducers/userSlice';
 
 // Your app's Firebase configuration
 const firebaseConfig = {
@@ -22,8 +23,8 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-export const auth = firebase.auth();
-export const firestore = firebase.firestore();
+const auth = firebase.auth();
+const firestore = firebase.firestore();
 if (window.location.hostname === "localhost") {  // Emulator
     firestore.useEmulator("localhost", 9091);
     auth.useEmulator('http://localhost:9099/');

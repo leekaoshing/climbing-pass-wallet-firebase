@@ -3,7 +3,7 @@ import React from "react";
 import { useDispatch } from 'react-redux';
 import {
     setShowAboutDialog
-} from '../reducers/userSlice';
+} from '../reducers/dialogSlice';
 
 export function AboutDialogButton() {
     const dispatch = useDispatch();

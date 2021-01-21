@@ -6,8 +6,9 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setShowPasswordResetDialog } from "../reducers/userSlice";
-import { auth } from '../services/firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
+import { setShowPasswordResetDialog } from "../reducers/dialogSlice";
+import { setEditableUser } from "../reducers/userSlice";
 import { PasswordResetDialog } from './PasswordResetDialog';
 import { SignUpButton } from './SignUpButton';
 
@@ -25,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
 export function Login() {
     const dispatch = useDispatch();
     const classes = useStyles();
+    const firebase = useFirebase();
+    const firestore = useFirestore();
 
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
@@ -33,20 +36,24 @@ export function Login() {
 
     const [loginError, setLoginError] = useState('');
     const [loading, setLoading] = useState(false);
-    
+
     const cannotSubmit = identifierError !== '' || passwordError !== '' || identifier === '' || password === '';
 
     const signInWithEmailAndPasswordHandler = async (email, password) => {
-        await auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                setIdentifier('');
-                setPassword('');
-                setLoading(false);
-            })
-            .catch(error => {
-                setLoginError(error.message);
-                setLoading(false);
-            });
+        console.log('USE FIREBASE', firebase);
+        const auth = await firebase.auth().signInWithEmailAndPassword(email, password);
+        const user = await firestore.collection('users').doc(auth.uid).get(); // TODO This is for login, but shouldn't be here since user may already be logged in on page load
+        console.log('FETCHED USER', user.data())
+        dispatch(setEditableUser(user.data()));
+        // .then(() => {
+        //     setIdentifier('');
+        //     setPassword('');
+        //     setLoading(false);
+        // })
+        // .catch(error => {
+        //     setLoginError(error.message);
+        //     setLoading(false);
+        // });
     };
 
     const handleSubmit = () => {
@@ -66,7 +73,17 @@ export function Login() {
 
         // TODO add loading icon and error message
         setLoading(true);
-        signInWithEmailAndPasswordHandler(identifier, password);
+        signInWithEmailAndPasswordHandler(identifier, password)
+            .then(() => {
+                setIdentifier('');
+                setPassword('');
+                setLoading(false);
+            })
+            .catch(error => {
+                console.log('ERROR', error)
+                setLoginError(error.message);
+                setLoading(false);
+            });
     }
 
     const handleKeyDown = event => {
@@ -119,6 +136,7 @@ export function Login() {
                 <TextField
                     error={identifierError !== ''}
                     label="Email"
+                    id="email for login"
                     name="identifier"
                     helperText={identifierError}
                     variant="outlined"
@@ -132,6 +150,7 @@ export function Login() {
                 <TextField
                     error={passwordError !== ''}
                     label="Password"
+                    id="password for login"
                     name="password"
                     helperText={passwordError}
                     variant="outlined"

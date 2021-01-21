@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { createFirestoreInstance } from 'redux-firestore';
 import store, { rrfConfig } from './app/store';
-import { Application } from './components/Application';
+import App from './App';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 
@@ -20,7 +20,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
-          <Application />        
+        <App />
       </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,

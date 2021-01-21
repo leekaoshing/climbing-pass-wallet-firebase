@@ -1,16 +1,18 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-    selectShowUpdateResultDialog,
-    selectUpdateResult,
-    setShowUpdateResultDialog
-} from '../reducers/userSlice';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import DoneIcon from '@material-ui/icons/Done';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    selectShowUpdateResultDialog,
+    setShowUpdateResultDialog
+} from '../reducers/dialogSlice';
+import {
+    selectUpdateResult
+} from '../reducers/userSlice';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
