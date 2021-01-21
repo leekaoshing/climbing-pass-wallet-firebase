@@ -1,0 +1,29 @@
+{
+  "generator-react-firebase": {
+    "promptValues": {
+      "githubUser": "leekaoshing",
+      "includeRedux": true,
+      "includeFirestore": true,
+      "otherFeatures": [
+        "Continuous Integration config",
+        "Firebase Cloud Messaging",
+        "Firebase Functions (with ESNext support)",
+        "Tests for Firebase Functions (Mocha/Chai or Jest)",
+        "Tests for React Components (Jest)",
+        "Tests for UI (Cypress)",
+        "Firebase Analytics",
+        "Error Tracking (Sentry.io)",
+        "Client Side Error Reporting (Stackdriver)"
+      ],
+      "functionsTestTool": "jest",
+      "typescriptCloudFunctions": false,
+      "firebaseKey": "AIzaSyD3WTY0d0oHdZSxnAghqg-F7hKJ74jrtyA",
+      "firebaseProjectId": "climbing-pass-wallet",
+      "messagingSenderId": "287194549775",
+      "appId": "1:287194549775:web:b4792b4fd172931caf9d7a",
+      "measurementId": "G-ZLTF129GET",
+      "firebasePublicVapidKey": "BMJpdSgM4y_3wilp7blq6p2jaV3zcR9s6WZTtRmZucACVcbjT7-MP6kiaZwOpnwwyz8e0TOBz-Q7vXPVxv2mTJM",
+      "ciProvider": "githubActions"
+    }
+  }
+}

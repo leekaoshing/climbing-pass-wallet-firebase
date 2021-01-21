@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "climbing-pass-wallet",
+    "master": "climbing-pass-wallet",
+    "prod": "climbing-pass-wallet"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "short_name": "Climbing-pass-wallet-firebase",
+  "name": "Climbing-pass-wallet-firebase",
+  "start_url": ".",
+  "background_color": "#2196f3",
+  "theme_color": "#2196f3",
+  "display": "standalone"
+}
