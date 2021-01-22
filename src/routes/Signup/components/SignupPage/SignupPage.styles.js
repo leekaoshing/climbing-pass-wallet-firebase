@@ -5,7 +5,6 @@ export default (theme) => ({
     height: '100%',
     width: '100%',
     fontWeight: 400,
-    paddingTop: '1.5rem'
   },
   panel: {
     ...theme.flexColumnCenter,
@@ -31,7 +30,19 @@ export default (theme) => ({
   loginLink: {
     fontSize: '1.2rem'
   },
+  about: {
+    ...theme.flexColumnCenter,
+    justifyContent: 'center',
+    marginTop: '1.5rem'
+  },
+  aboutLabel: {
+    fontSize: '1rem',
+    fontWeight: 'bold'
+  },
+  aboutLink: {
+    fontSize: '1.2rem'
+  },
   providers: {
-    marginTop: '1rem'
+    marginTop: '0.25rem'
   }
 })

@@ -12,7 +12,19 @@
  * />
  */
 export function validateEmail(value) {
-  return value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? 'Invalid email address'
+  return value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/i.test(value)
+    ? 'Invalid email address.'
+    : undefined
+}
+
+export function validateName(value) {
+  return value && !/^[a-zA-Z ]+$/i.test(value)
+    ? 'Alphabets only.'
+    : undefined
+}
+
+export function validatePassword(value) {
+  return value && value.length < 6
+    ? 'At least 6 characters.'
     : undefined
 }

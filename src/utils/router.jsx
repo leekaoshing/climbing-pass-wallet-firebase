@@ -4,7 +4,7 @@ import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 import { createBrowserHistory } from 'history'
 import LoadingSpinner from '../components/LoadingSpinner'
-import { LIST_PATH } from '../constants/paths'
+import { HOME_PATH } from '../constants/paths'
 
 const locationHelper = locationHelperBuilder({})
 const history = createBrowserHistory()
@@ -19,7 +19,7 @@ const UNAUTHED_REDIRECT = 'UNAUTHED_REDIRECT'
  * @returns {React.Component} wrappedComponent
  */
 export const UserIsAuthenticated = connectedRouterRedirect({
-  redirectPath: '/login',
+  redirectPath: '/signup',
   AuthenticatingComponent: LoadingSpinner,
   wrapperDisplayName: 'UserIsAuthenticated',
   // Want to redirect the user when they are done loading and authenticated
@@ -54,7 +54,7 @@ export const UserIsNotAuthenticated = connectedRouterRedirect({
   authenticatingSelector: ({ firebase: { auth, isInitializing } }) =>
     !auth.isLoaded || isInitializing,
   redirectPath: (state, ownProps) =>
-    locationHelper.getRedirectQueryParam(ownProps) || LIST_PATH,
+    locationHelper.getRedirectQueryParam(ownProps) || HOME_PATH,
   redirectAction: (newLoc) => (dispatch) => {
     // Use push, replace, and go to navigate around.
     history.push(newLoc)

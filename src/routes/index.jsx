@@ -1,31 +1,34 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import CoreLayout from '../layouts/CoreLayout'
 import Home from './Home'
 import LoginRoute from './Login'
 import SignupRoute from './Signup'
-import ProjectsRoute from './Projects'
 import AccountRoute from './Account'
-import NotFoundRoute from './NotFound'
+import AboutRoute from './About'
+import ResetPasswordRoute from './ResetPassword'
 
 export default function createRoutes() {
   return (
     <CoreLayout>
       <Switch>
-        <Route exact path={Home.path} component={() => <Home.component />} />
+        {/* <Route exact path={Home.path} component={() => <Home.component />} /> */}
         {
           /* Build Route components from routeSettings */
           [
+            Home,
             AccountRoute,
-            ProjectsRoute,
             SignupRoute,
-            LoginRoute
+            LoginRoute,
+            AboutRoute,
+            ResetPasswordRoute
             /* Add More Routes Here */
           ].map((settings) => (
-            <Route key={`Route-${settings.path}`} {...settings} />
+            <Route exact key={`Route-${settings.path}`} {...settings} />
           ))
         }
-        <Route component={NotFoundRoute.component} />
+        {/* <Route component={NotFoundRoute.component} /> */}
+        <Redirect from="*" to= "/home"/>
       </Switch>
     </CoreLayout>
   )

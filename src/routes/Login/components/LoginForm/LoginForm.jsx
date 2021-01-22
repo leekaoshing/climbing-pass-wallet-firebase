@@ -2,15 +2,19 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
 import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import { validateEmail } from 'utils/form'
 import styles from './LoginForm.styles'
+import { useHistory } from 'react-router-dom'
+import { RESET_PATH } from 'constants/paths'
 
 const useStyles = makeStyles(styles)
 
 function LoginForm({ onSubmit }) {
   const classes = useStyles()
+  const history = useHistory()
   const {
     register,
     handleSubmit,
@@ -23,10 +27,11 @@ function LoginForm({ onSubmit }) {
 
   return (
     <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
+      <Typography variant="h6">Log In</Typography>
       <TextField
         type="email"
         name="email"
-        placeholder="email"
+        placeholder="Email"
         autoComplete="email"
         margin="normal"
         fullWidth
@@ -35,12 +40,12 @@ function LoginForm({ onSubmit }) {
           validate: validateEmail
         })}
         error={!!errors.email}
-        helperText={errors.email && 'Email must be valid'}
+        helperText={errors.email && errors.email.message}
       />
       <TextField
         type="password"
         name="password"
-        placeholder="password"
+        placeholder="Password"
         autoComplete="current-password"
         margin="normal"
         fullWidth
@@ -48,15 +53,25 @@ function LoginForm({ onSubmit }) {
           required: true
         })}
         error={!!errors.password}
-        helperText={errors.password && 'Password is required'}
+        helperText={errors.password && errors.password.message}
       />
       <div className={classes.submit}>
         <Button
           color="primary"
           type="submit"
           variant="contained"
+          data-test="login-button"
           disabled={isSubmitting || !isValid}>
-          {isSubmitting ? 'Loading' : 'Login'}
+          {isSubmitting ? 'Loading' : 'Log In'}
+        </Button>
+        <br/>
+        <Button
+          color="primary"
+          type="submit"
+          variant="contained"
+          onClick={() => history.push(RESET_PATH)}
+          data-test="reset-password-button">
+          Forgot Password?
         </Button>
       </div>
     </form>

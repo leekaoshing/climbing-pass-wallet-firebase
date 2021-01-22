@@ -13,8 +13,8 @@ export default (theme) => ({
     justifyContent: 'center',
     flexGrow: 1,
     textAlign: 'center',
-    padding: '1.25rem',
+    padding: '0.5rem',
     minWidth: '192px',
-    marginTop: '1.5rem'
+    marginTop: '0.5rem'
   }
 })

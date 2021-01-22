@@ -3,7 +3,8 @@ export default (theme) => ({
     ...theme.flexColumnCenter,
     justifyContent: 'flex-start',
     width: '100%',
-    height: '100%'
+    height: '100%',
+    marginBottom: '1rem'
   },
   fields: {
     width: '100%',

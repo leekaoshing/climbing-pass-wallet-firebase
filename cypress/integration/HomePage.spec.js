@@ -1,17 +1,24 @@
 import { createSelector } from '../utils'
 
-describe('Home', () => {
+describe('Home without authentication', () => {
   beforeEach(() => {
     cy.logout()
-    cy.visit('/')
+    cy.visit('localhost:3000/home')
   })
 
-  it('Shows features', () => {
-    cy.get(createSelector('features')).should('exist')
+  it('Redirects to signup page', () => {
+    cy.url().should('include', '/signup')
+  })
+})
+
+describe('Home with authentication', () => {
+  beforeEach(() => {
+    cy.login()
+    cy.visit('localhost:3000/home')
   })
 
-  it('Has link to login page', () => {
-    cy.get(createSelector('sign-in')).click()
-    cy.url().should('include', '/login')
+  it('Shows user details', () => {
+    cy.url().should('include', '/home')
+    // TODO
   })
 })

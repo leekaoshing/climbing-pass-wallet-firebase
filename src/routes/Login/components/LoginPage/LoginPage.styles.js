@@ -22,7 +22,7 @@ export default (theme) => ({
   signup: {
     ...theme.flexColumnCenter,
     justifyContent: 'center',
-    marginTop: '2rem'
+    marginTop: '1.5rem'
   },
   signupLabel: {
     fontSize: '1rem',
@@ -32,6 +32,6 @@ export default (theme) => ({
     fontSize: '1.2rem'
   },
   providers: {
-    marginTop: '1rem'
+    marginTop: '0.25rem'
   }
 })

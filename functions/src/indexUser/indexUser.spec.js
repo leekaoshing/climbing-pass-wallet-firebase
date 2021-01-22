@@ -85,7 +85,7 @@ describe('indexUser Firestore Cloud Function (onWrite)', () => {
       USER_PATH
     )
     const afterSnap = functionsTest.firestore.makeDocumentSnapshot(
-      null as any,
+      null,// as any,
       USER_PATH
     )
     const changeEvent = { before: beforeSnap, after: afterSnap }

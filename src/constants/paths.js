@@ -1,4 +1,6 @@
-export const LIST_PATH = '/projects'
 export const ACCOUNT_PATH = '/account'
 export const LOGIN_PATH = '/login'
 export const SIGNUP_PATH = '/signup'
+export const HOME_PATH = '/home'
+export const ABOUT_PATH = '/about'
+export const RESET_PATH = '/reset'

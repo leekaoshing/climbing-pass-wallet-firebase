@@ -2,12 +2,13 @@ import React from 'react'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector } from 'react-redux'
-import { isLoaded, useFirebase } from 'react-redux-firebase'
+import { isLoaded, useFirebase, useFirebaseConnect, useFirestore } from 'react-redux-firebase'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { useNotifications } from 'modules/notification'
 import defaultUserImageUrl from 'static/User.png'
 import AccountForm from '../AccountForm'
 import styles from './AccountEditor.styles'
+import { USERS_COLLECTION } from 'constants/firebasePaths'
 
 const useStyles = makeStyles(styles)
 
@@ -15,6 +16,9 @@ function AccountEditor() {
   const classes = useStyles()
   const { showSuccess, showError } = useNotifications()
   const firebase = useFirebase()
+  const firestore = useFirestore()
+
+  const auth = useSelector(state => state.firebase.auth)
 
   // Get profile from redux state
   const profile = useSelector(({ firebase }) => firebase.profile)
@@ -23,14 +27,23 @@ function AccountEditor() {
     return <LoadingSpinner />
   }
 
-  async function updateAccount(newAccount) {
-    try {
-      await firebase.updateProfile(newAccount)
-      showSuccess('Profile updated successfully')
-    } catch (err) {
-      console.error('Error updating profile', err) // eslint-disable-line no-console
-      showError(`Error updating profile: ${err.message}`)
+  async function updateAccount(details) {
+    const detailsForFirestore = {
+      firstName: details.firstName,
+      lastName: details.lastName,
+      email: details.email
     }
+
+    const detailsForFirebaseProfile = {
+      photoURL: details.avatarUrl
+    }
+    Promise.all([
+      firestore.collection(USERS_COLLECTION).doc(auth.uid).update(detailsForFirestore),
+      firebase.auth().currentUser.updateProfile(detailsForFirebaseProfile),
+      firebase.auth().currentUser.updateEmail(details.email)
+    ])
+      .then(() => showSuccess('Profile updated successfully'))
+      .catch(err => showError(`Error updating profile: ${err.message}`))
   }
 
   return (

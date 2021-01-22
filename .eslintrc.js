@@ -36,7 +36,10 @@ module.exports = {
         useTabs: false
       }
     ],
-    
+    // Added
+    'no-unused-vars': 0,
+    'prettier/prettier': 0,
+    'no-console': 0
   },
   overrides: [
     {
@@ -52,7 +55,6 @@ module.exports = {
       rules: {
         'no-restricted-globals': 0,
         'no-console': 0,
-        'no-unused-vars': 0 // Added
       }
     },
     {

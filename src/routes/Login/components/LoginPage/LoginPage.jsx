@@ -41,7 +41,7 @@ function LoginPage() {
       </div>
       <div className={classes.signup}>
         <span className={classes.signupLabel}>Need an account?</span>
-        <Link className={classes.signupLink} to={SIGNUP_PATH}>
+        <Link className={classes.signupLink} to={SIGNUP_PATH} data-test="sign-up-link"> 
           Sign Up
         </Link>
       </div>

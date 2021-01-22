@@ -1,6 +1,5 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import 'firebase/database'
 import 'firebase/firestore'
 import 'firebase/performance'
 
@@ -8,7 +7,6 @@ export default function initializeFirebase() {
   const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_apiKey,
     authDomain: process.env.REACT_APP_FIREBASE_authDomain,
-    databaseURL: process.env.REACT_APP_FIREBASE_databaseURL,
     projectId: process.env.REACT_APP_FIREBASE_projectId,
     storageBucket: process.env.REACT_APP_FIREBASE_storageBucket,
     messagingSenderId: process.env.REACT_APP_FIREBASE_messagingSenderId,
@@ -16,14 +14,17 @@ export default function initializeFirebase() {
     appId: process.env.REACT_APP_FIREBASE_appId
   }
 
-  // Enable Real Time Database emulator if environment variable is set
-  if (process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST) {
-    firebaseConfig.databaseURL = `http://${process.env.REACT_APP_FIREBASE_DATABASE_EMULATOR_HOST}?ns=${firebaseConfig.projectId}`
-    console.debug(`RTDB emulator enabled: ${firebaseConfig.databaseURL}`) // eslint-disable-line no-console
-  }
-
   // Initialize Firebase instance
   firebase.initializeApp(firebaseConfig)
+
+  // Set emulator ports
+  const auth = firebase.auth()
+  const firestore = firebase.firestore()
+  if (window.location.hostname === "localhost") {  // Emulator
+    firestore.useEmulator("192.168.1.19", 9091)
+    auth.useEmulator('http://192.168.1.19:9099/')
+  }
+
   // Initialize Firebase analytics if measurementId exists
   if (firebaseConfig.measurementId) {
     firebase.analytics()

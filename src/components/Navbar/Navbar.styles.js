@@ -18,5 +18,13 @@ export default (theme) => ({
     color: 'white',
     textDecoration: 'none',
     alignSelf: 'center'
+  },
+  about: {
+    color: 'white',
+    textDecoration: 'none',
+    alignSelf: 'center'
+  },
+  title: {
+    flexGrow: 1,
   }
 })
