@@ -34,6 +34,7 @@ function LoginForm({ onSubmit }) {
         placeholder="Email"
         autoComplete="email"
         margin="normal"
+        data-test="email-field"
         fullWidth
         inputRef={register({
           required: true,
@@ -48,6 +49,7 @@ function LoginForm({ onSubmit }) {
         placeholder="Password"
         autoComplete="current-password"
         margin="normal"
+        data-test="password-field"
         fullWidth
         inputRef={register({
           required: true
@@ -66,9 +68,8 @@ function LoginForm({ onSubmit }) {
         </Button>
         <br/>
         <Button
-          color="primary"
           type="submit"
-          variant="contained"
+          variant="outlined"
           onClick={() => history.push(RESET_PATH)}
           data-test="reset-password-button">
           Forgot Password?

@@ -1,3 +1,6 @@
+import { actionTypes } from 'redux-firestore'
+import { resetState as resetDialogState } from 'store/reducers/dialog'
+import { resetState as resetUserState } from 'store/reducers/user'
 import { setAnalyticsUser } from 'utils/analytics'
 import { setErrorUser } from 'utils/errorHandler'
 
@@ -19,6 +22,11 @@ export const defaultRRFConfig = {
       setErrorUser(auth)
       // Set auth within analytics
       setAnalyticsUser(auth)
+    }
+    if (!auth) {
+      dispatch(resetDialogState())
+      dispatch(resetUserState())
+      dispatch({ type: actionTypes.CLEAR_DATA })
     }
   }
 }

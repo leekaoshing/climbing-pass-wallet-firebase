@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialState = {
+  passes: null,
+  updateResult: null
+}
+
 export const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    passes: null,
-  },
+  initialState,
   reducers: {
     addGymToUser: (state, action) => {
       state.passes[action.payload] = 0
@@ -19,12 +22,14 @@ export const userSlice = createSlice({
     },
     setUpdateResult: (state, action) => {
       state.updateResult = action.payload
-    }
+    },
+    resetState: () => initialState,
   }
 })
 
 export const {
   addGymToUser,
+  resetState,
   setPassesForGym,
   setPassesForUser,
   setUpdateResult

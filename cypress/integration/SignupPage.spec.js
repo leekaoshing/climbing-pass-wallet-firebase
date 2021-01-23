@@ -23,11 +23,11 @@ describe('Signup without authentication', () => {
   })  
 
   it('Should signup properly', () => {
-    cy.get(createSelector('first-name-field')).enter('Peter')
-    cy.get(createSelector('last-name-field')).enter('Lim')
-    cy.get(createSelector('email-field')).enter('plim@mail.com')
-    cy.get(createSelector('password-field')).enter('123456')
-    cy.get(createSelector('password-confirmation-field')).enter('123456')
+    cy.get(createSelector('first-name-field')).type('Peter')
+    cy.get(createSelector('last-name-field')).type('Lim')
+    cy.get(createSelector('email-field')).type('plim@mail.com')
+    cy.get(createSelector('password-field')).type('123456')
+    cy.get(createSelector('password-confirmation-field')).type('123456')
     cy.get(createSelector('sign-up-button')).click()
 
     cy.url().should('include', '/home')
@@ -36,17 +36,17 @@ describe('Signup without authentication', () => {
   })  
 })
 
-describe('Signup with authentication', () => {
-  beforeEach(() => {
-    cy.login()
-    cy.visit('localhost:3000/signup')
-  })
+// describe('Signup with authentication', () => {
+//   beforeEach(() => {
+//     cy.login()
+//     cy.visit('localhost:3000/signup')
+//   })
 
-  it('should redirect to home', () => {
-    cy.url().should('include', '/home')
-  })
+//   it('should redirect to home', () => {
+//     cy.url().should('include', '/home')
+//   })
 
-  // TODO Follow sign up process
-})
+//   // TODO Follow sign up process
+// })
 
 // TODO Signup with authentication

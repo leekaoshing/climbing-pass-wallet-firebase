@@ -18,12 +18,30 @@ describe('Login Page', () => {
   })
 
   it('Logs in properly', () => {
-    cy.url().should('include', '/login')
-    cy.get(createSelector('email-field')).enter('plim@mail.com')
-    cy.get(createSelector('password-field')).enter('123456')
-    cy.get(createSelector('login-button')).click()
-
-    cy.url().should('include', '/home')
+    // Set up test user // TODO Fix
+    const testUser = {
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testuser@mail.com',
+      password: '123456'
+    }
+    // cy.createUser(testUser).then(uid => {
+      // cy.callFirestore('set', `users/123`, {
+      //   hello: 'there'
+      // })
+      cy.addInfo()
+      cy.log('created store for user')
+      cy.url().should('include', '/login')
+      cy.wait(50)
+  
+      cy.get(createSelector('email-field')).type(testUser.email)
+      cy.get(createSelector('password-field')).type(testUser.password)
+      cy.get(createSelector('login-button')).click()
+  
+      cy.url().should('include', '/home')
+      cy.get(createSelector('user-name-card')).should('contain', 'Test User')
+    // })
+    
 
     // TODO Validate that the home screen is correct
   })

@@ -2,7 +2,7 @@
 import functionsTestSetup from 'firebase-functions-test'
 import * as admin from 'firebase-admin'
 const projectId = 'unit-test-project'
-const { FIREBASE_DATABASE_EMULATOR_HOST, FIRESTORE_EMULATOR_HOST } = process.env
+const { FIRESTORE_EMULATOR_HOST } = process.env
 
 // Setup firebase-functions-tests to online mode (will communicate with emulators)
 global.functionsTest = functionsTestSetup({

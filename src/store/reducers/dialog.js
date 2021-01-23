@@ -1,20 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialState = {
+  showUpdateResultDialog: false,
+}
+
 export const dialogSlice = createSlice({
   name: 'dialog',
-  initialState: {
-    showAboutDialog: false,
-    showUpdateResultDialog: false,
-  },
+  initialState,
   reducers: {
     setShowUpdateResultDialog: (state, action) => {
       state.showUpdateResultDialog = action.payload
-    }
+    },
+    resetState: () => initialState,
   }
 })
 
 export const {
-  setShowUpdateResultDialog,
+  resetState,
+  setShowUpdateResultDialog
 } = dialogSlice.actions
 
 // The function below is called a selector and allows us to select a value from

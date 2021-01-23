@@ -48,39 +48,10 @@ function usePassesList() {
 		}
 	])
 
-	// const data = useSelector(({ firestore: { data } }) => data)
-	// console.log('DATA', data)
-
 	// // Get user from redux state
 	const users = useSelector(({ firestore: { data: { users } } }) => users)
 	const gyms = useSelector(({ firestore: { data: { gyms } } }) => gyms)
 
-	// // New dialog
-	// const [newDialogOpen, changeDialogState] = useState(false)
-	// const toggleDialog = () => changeDialogState(!newDialogOpen)
-
-	// function addProject(newInstance) {
-	//   if (!auth.uid) {
-	//     return showError('You must be logged in to create a project')
-	//   }
-	//   return firestore
-	//     .add(USERS_COLLECTION, {
-	//       ...newInstance,
-	//       createdBy: auth.uid,
-	//       createdAt: firestore.FieldValue.serverTimestamp()
-	//     })
-	//     .then(() => {
-	//       toggleDialog()
-	//       showSuccess('Project added successfully')
-	//     })
-	//     .catch((err) => {
-	//       console.error('Error:', err) // eslint-disable-line no-console
-	//       showError(err.message || 'Could not add project')
-	//       return Promise.reject(err)
-	//     })
-	// }
-
-	// return { user, gyms }
 	return { users, gyms, uid: auth.uid }
 }
 
@@ -99,12 +70,13 @@ function PassesList() {
 
 	useEffect(() => {
 		firestore.collection(USERS_COLLECTION).doc(uid).get().then(user => {
-			dispatch(setPassesForUser(user.data().passes))
+			if (user.exists) {
+				dispatch(setPassesForUser(user.data().passes))
+			}
 		})
-	}, [uid, dispatch, firestore])
+	}, [uid, dispatch, firestore, users])
 
 	const editableUserPasses = useSelector(selectUserPasses)
-
 	if (!isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !editableUserPasses || !users[uid]) {
 		return <LoadingSpinner />
 	}
@@ -182,7 +154,7 @@ function PassesList() {
 	return (
 		<div className={classes.root}  >
 			<Paper className={classes.paper} elevation={2}>
-				<Typography variant="h6">{`${user.firstName} ${user.lastName}`}</Typography>
+				<Typography variant="h6" data-test="user-name-card">{`${user.firstName} ${user.lastName}`}</Typography>
 			</Paper>
 			{
 				!isEmpty(editableUserPasses) ?
@@ -191,7 +163,6 @@ function PassesList() {
 							Object.keys(editableUserPasses).map((gymId) => {
 								counter += 1
 								const numberOfPasses = editableUserPasses[gymId]
-								const numberOfPassesInFirestore = userPassesInFirestore[gymId] || 0
 								return (
 									<div key={`Gym-${gymId}`}>
 										{/* {counter !== 1 ? <Divider variant="middle" /> : null} */}
