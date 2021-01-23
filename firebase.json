@@ -29,6 +29,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "site": "climbingpasswallet",
     "public": "build",
     "predeploy": "npm run build",
     "ignore": [
