@@ -13,7 +13,8 @@ describe('Account without authentication', () => {
 
 describe('Account with authentication', () => {
   beforeEach(() => {
-    cy.login()
+    cy.logout()
+    cy.login('gYKoNwHzQ41AWVWImxvGYbAuKJze')
     cy.visit('localhost:3000/account')
   })
 
@@ -21,4 +22,3 @@ describe('Account with authentication', () => {
     cy.url().should('include', '/account')
   })
 })
-// TODO Home with authentication

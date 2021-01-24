@@ -32,7 +32,8 @@ function SignupPage() {
       email: form.email,
       firstName: form.firstName,
       lastName: form.lastName,
-      passes: {}
+      passes: {},
+      friends: []
     }
 
     try {

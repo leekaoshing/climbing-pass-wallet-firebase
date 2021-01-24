@@ -35,10 +35,10 @@ function LoginPage() {
       <Paper className={classes.panel}>
         <LoginForm onSubmit={emailLogin} onSubmitFail={onSubmitFail} />
       </Paper>
-      <div className={classes.orLabel}>or</div>
+      {/* <div className={classes.orLabel}>or</div>
       <div className={classes.providers}>
         <GoogleButton onClick={googleLogin} data-test="google-auth-button" />
-      </div>
+      </div> */}
       <div className={classes.signup}>
         <span className={classes.signupLabel}>Need an account?</span>
         <Link className={classes.signupLink} to={SIGNUP_PATH} data-test="sign-up-link"> 

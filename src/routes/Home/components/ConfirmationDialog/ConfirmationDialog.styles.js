@@ -6,6 +6,8 @@ export default (theme) => ({
     ...theme.flexColumnCenter
   },
   buttons: {
-    ...theme.flexColumnCenter
+    ...theme.flexColumnCenter,
+    marginTop: '0.5rem',
+    width: '100px'
   }
 })

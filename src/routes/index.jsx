@@ -12,7 +12,6 @@ export default function createRoutes() {
   return (
     <CoreLayout>
       <Switch>
-        {/* <Route exact path={Home.path} component={() => <Home.component />} /> */}
         {
           /* Build Route components from routeSettings */
           [
@@ -27,7 +26,6 @@ export default function createRoutes() {
             <Route exact key={`Route-${settings.path}`} {...settings} />
           ))
         }
-        {/* <Route component={NotFoundRoute.component} /> */}
         <Redirect from="*" to= "/home"/>
       </Switch>
     </CoreLayout>

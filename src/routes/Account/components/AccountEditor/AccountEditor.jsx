@@ -28,10 +28,12 @@ function AccountEditor() {
   }
 
   async function updateAccount(details) {
+    const emailLowerCase = details.email.toLowerCase()
+    
     const detailsForFirestore = {
       firstName: details.firstName,
       lastName: details.lastName,
-      email: details.email
+      email: emailLowerCase
     }
 
     const detailsForFirebaseProfile = {
@@ -40,7 +42,7 @@ function AccountEditor() {
     Promise.all([
       firestore.collection(USERS_COLLECTION).doc(auth.uid).update(detailsForFirestore),
       firebase.auth().currentUser.updateProfile(detailsForFirebaseProfile),
-      firebase.auth().currentUser.updateEmail(details.email)
+      firebase.auth().currentUser.updateEmail(emailLowerCase)
     ])
       .then(() => showSuccess('Profile updated successfully'))
       .catch(err => showError(`Error updating profile: ${err.message}`))

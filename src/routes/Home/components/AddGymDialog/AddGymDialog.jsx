@@ -11,14 +11,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addGymToUser } from 'store/reducers/user'
 import styles from './AddGymDialog.styles'
 
 const useStyles = makeStyles(styles)
 
-function AddGymDialog({ gymsToAdd }) {
+function AddGymDialog({ gymsToAdd, addGymFunction }) {
 	const classes = useStyles()
-	const dispatch = useDispatch()
 
 	const [showAddGymDialog, setShowAddGymDialog] = useState(false)
 
@@ -31,7 +29,7 @@ function AddGymDialog({ gymsToAdd }) {
 	}
 
 	function handleSelect(gymId) {
-		dispatch(addGymToUser(gymId))
+		addGymFunction(gymId)
 		closeAddGymDialog()
 	}
 
@@ -41,7 +39,7 @@ function AddGymDialog({ gymsToAdd }) {
 
 	return (
 		<>
-			<Button variant="outlined" color="primary" onClick={openAddGymDialog} disabled={isButtonDisabled()}>
+			<Button size="small" variant="outlined" onClick={openAddGymDialog} disabled={isButtonDisabled()}>
 				Add gym
 			</Button>
 			<Dialog open={showAddGymDialog} onClose={closeAddGymDialog}>
@@ -65,7 +63,8 @@ function AddGymDialog({ gymsToAdd }) {
 }
 
 AddGymDialog.propTypes = {
-	gymsToAdd: PropTypes.object.isRequired
+	gymsToAdd: PropTypes.object.isRequired,
+	addGymFunction: PropTypes.func.isRequired
 }
 
 export default AddGymDialog

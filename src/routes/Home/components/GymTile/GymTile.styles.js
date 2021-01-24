@@ -6,14 +6,14 @@ export default (theme) => ({
     // flexDirection: 'column',
     // alignItems: 'flex-start',
     // height: '200px',
-    width: '300px',
+    width: '500px',
     // margin: theme.spacing(0.5),
     // padding: theme.spacing(1.3)
   },
   top: {
-    // display: 'flex',
-    // justifyContent: 'space-between',
-    // width: '100%'
+    display: 'flex',
+    justifyContent: 'space-between',
+    minWidth: '100px'
   },
   name: {
     fontSize: '1.5rem',
@@ -29,6 +29,9 @@ export default (theme) => ({
     '&:visited': {
       textDecoration: 'none'
     }
+  },
+  icons: {
+    fontSize: 'small'
   },
   buyButton: {
     color: blue[600]
