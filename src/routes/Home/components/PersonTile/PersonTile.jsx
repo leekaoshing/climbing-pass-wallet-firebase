@@ -150,8 +150,9 @@ function PersonTile({ user, editable }) {
 
 	function removeFriend() {
 		const friends = cloneDeep(loggedInUser.friends)
+		friends.splice(friends.indexOf(user.email), 1)
 		firestore.collection(USERS_COLLECTION).doc(auth.uid).update({
-			friends: friends.splice(friends.indexOf(user.email), 1)
+			friends
 		}) // TODO Catch error
 	}
 
