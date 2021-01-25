@@ -1,19 +1,11 @@
 import { blue } from '@material-ui/core/colors'
 
 export default (theme) => ({
-  root: {
-    // display: 'flex',
-    // flexDirection: 'column',
-    // alignItems: 'flex-start',
-    // height: '200px',
-    width: '500px',
-    // margin: theme.spacing(0.5),
-    // padding: theme.spacing(1.3)
-  },
   top: {
     display: 'flex',
     justifyContent: 'space-between',
-    minWidth: '100px'
+    minWidth: '100px',
+    // width: '150px'
   },
   name: {
     fontSize: '1.5rem',

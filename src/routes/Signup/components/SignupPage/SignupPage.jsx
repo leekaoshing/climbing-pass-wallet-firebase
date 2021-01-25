@@ -8,6 +8,7 @@ import { ABOUT_PATH, LOGIN_PATH } from 'constants/paths'
 import { useNotifications } from 'modules/notification'
 import SignupForm from '../SignupForm'
 import styles from './SignupPage.styles'
+import { USERS_COLLECTION, USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
 
 const useStyles = makeStyles(styles)
 
@@ -40,6 +41,7 @@ function SignupPage() {
       const { user } = await firebase.auth().createUserWithEmailAndPassword(newUser.email, form.password)
       // TODO User is logged in but the user document has not been generated
       await generateUserDocument(user, newUser)
+      await generateUserPublicDocument(user, newUser.email)
     } catch (error) {
       showError(error.message)
     }
@@ -53,11 +55,26 @@ function SignupPage() {
 
   async function generateUserDocument(user, userData) {
     if (!user) return
-    const userRef = firestore.doc(`users/${user.uid}`)
+    const userRef = firestore.doc(`${USERS_COLLECTION}/${user.uid}`)
     const snapshot = await userRef.get()
 
     if (!snapshot.exists) {
-      await userRef.set(userData)
+      await userRef.set({
+        ...userData,
+        uid: user.uid
+      })
+    } else {
+      throw new Error('User already exists in database.')
+    }
+  }
+
+  async function generateUserPublicDocument(user, email) {
+    if (!user) return
+    const userRef = firestore.doc(`${USERS_PUBLIC_COLLECTION}/${user.uid}`)
+    const snapshot = await userRef.get()
+
+    if (!snapshot.exists) {
+      await userRef.set({ email, uid: user.uid })
     } else {
       throw new Error('User already exists in database.')
     }
@@ -75,10 +92,10 @@ function SignupPage() {
       <Paper className={classes.panel}>
         <SignupForm onSubmit={emailSignup} onSubmitFail={onSubmitFail} />
       </Paper>
-      <div className={classes.orLabel}>or</div>
+      {/* <div className={classes.orLabel}>or</div>
       <div className={classes.providers}>
         <GoogleButton onClick={googleLogin} data-test="google-auth-button" />
-      </div>
+      </div> */}
       <div className={classes.login}>
         <span className={classes.loginLabel}>Have an account?</span>
         <Link className={classes.loginLink} to={LOGIN_PATH} data-test="login">

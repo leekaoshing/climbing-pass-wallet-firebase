@@ -5,8 +5,13 @@ service cloud.firestore {
       allow read;
     }
 
-    match /users/{user} {
+    match /users_public/{user} {
       allow read;      
+      allow write: if request.auth.uid == user;
+    }
+
+    match /users/{user} {
+      allow read: if request.auth.uid == user || request.auth.uid in resource.data.friends; // TODO What if email changes, should use UID instead
       allow write: if request.auth.uid == user;
     }
   }

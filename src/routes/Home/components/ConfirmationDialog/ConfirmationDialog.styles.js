@@ -5,9 +5,7 @@ export default (theme) => ({
   inputs: {
     ...theme.flexColumnCenter
   },
-  buttons: {
+  button: {
     ...theme.flexColumnCenter,
-    marginTop: '0.5rem',
-    width: '100px'
   }
 })

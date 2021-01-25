@@ -8,8 +8,6 @@ import { attachCustomCommands } from 'cypress-firebase'
 const projectId = Cypress.env('FIREBASE_projectId')
 const apiKey = Cypress.env('FIREBASE_apiKey')
 
-console.log(Cypress.env('TEST_UID'))
-
 const fbConfig = {
   apiKey,
   authDomain: `${projectId}.firebaseapp.com`,

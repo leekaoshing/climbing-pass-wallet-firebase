@@ -1,5 +1,6 @@
 import {
 	Avatar,
+	IconButton,
 	Button,
 	Dialog,
 	DialogActions,
@@ -10,6 +11,7 @@ import {
 	ListItemAvatar,
 	ListItemText
 } from '@material-ui/core'
+import SaveIcon from '@material-ui/icons/Save'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
@@ -45,9 +47,9 @@ function ConfirmationDialog({ isSubmitDisabled, passDifferences, onSubmit }) {
 
 	return (
 		<>
-			<Button variant="outlined" color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.buttons}>
-				Submit
-			</Button>
+			<IconButton variant="outlined" color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.button}>
+				<SaveIcon />
+			</IconButton>
 			<Dialog open={showConfirmationDialog} onClose={closeConfirmationDialog}>
 				<DialogTitle id="confirmation-dialog-title">Confirm changes</DialogTitle>
 				<DialogContent>

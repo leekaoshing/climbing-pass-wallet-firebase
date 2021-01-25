@@ -1,22 +1,16 @@
 import { Avatar } from '@material-ui/core'
-import Tooltip from '@material-ui/core/Tooltip'
 import { blue } from '@material-ui/core/colors'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import ListItem from '@material-ui/core/ListItem'
-import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
+import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/Add'
-import CallMadeIcon from '@material-ui/icons/CallMade'
 import RemoveIcon from '@material-ui/icons/Remove'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { setPassesForGym } from 'store/reducers/user'
 import styles from './GymTile.styles'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Button from '@material-ui/core/Button'
-import Fab from '@material-ui/core/Fab'
 
 const useStyles = makeStyles(styles)
 
@@ -76,39 +70,13 @@ function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, edit
 								<span style={getTextStyle()} data-test={`passes-${gymId}`} >{numberOfPasses}</span>
 							</Grid>
 					}
-					{/* 					
-					{
-						editable ?
-							<Grid item xs={3} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-								<IconButton aria-label="decrementPass" data-test={`decrement-pass-${gymId}`} onClick={() => changePass(gymId, -1)}>
-									<RemoveIcon />
-								</IconButton>
-							</Grid>
-							:
-							null
-					}
-					<Grid item xs={editable ? 2 : 5} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-						<span style={getTextStyle()} data-test={`passes-${gymId}`} >{numberOfPasses}</span>
-					</Grid>
-					{
-						editable ?
-							<>
-								<Grid item xs={3} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-									<IconButton aria-label="incrementPass" data-test={`increment-pass-${gymId}`} onClick={() => changePass(gymId, 1)}>
-										<AddIcon />
-									</IconButton>
-								</Grid>
-								{/* <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+					{/* <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 									<IconButton aria-label="buyPasses" onClick={() => openGymLink(gymLink)} className={classes.buyButton} variant="contained">
 										<span style={{ fontSize: 8 }} data-test={`gym-link-${gymId}`}>Buy</span> &nbsp; <CallMadeIcon style={{ fontSize: 8 }} />
 									</IconButton>
 								</Grid> */}
-					{/* </> */}
-					{/* : null */}
-					{/* } */}
 				</Grid>
 			</div>
-			{/* </Paper> */}
 		</ListItem >
 	)
 }

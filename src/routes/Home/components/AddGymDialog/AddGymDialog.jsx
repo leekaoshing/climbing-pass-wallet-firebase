@@ -1,16 +1,16 @@
 import {
-	Button,
 	Dialog,
 	DialogContent,
-	DialogTitle,
+	DialogTitle, 
+	IconButton,
 	List,
 	ListItem,
 	ListItemText
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import AddIcon from '@material-ui/icons/Add'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
 import styles from './AddGymDialog.styles'
 
 const useStyles = makeStyles(styles)
@@ -39,9 +39,9 @@ function AddGymDialog({ gymsToAdd, addGymFunction }) {
 
 	return (
 		<>
-			<Button size="small" variant="outlined" onClick={openAddGymDialog} disabled={isButtonDisabled()}>
-				Add gym
-			</Button>
+			<IconButton variant="outlined" onClick={openAddGymDialog} disabled={isButtonDisabled()}>
+				<AddIcon />
+			</IconButton>
 			<Dialog open={showAddGymDialog} onClose={closeAddGymDialog}>
 				<DialogTitle id="add-gym-dialog-title">Add gym</DialogTitle>
 				<DialogContent>
