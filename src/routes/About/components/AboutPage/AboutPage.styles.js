@@ -2,7 +2,7 @@ export default theme => ({
   root: {
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
-    overflowY: 'scroll'
+    // overflowY: 'scroll'
   },
   gridItem: {
     textAlign: 'left',

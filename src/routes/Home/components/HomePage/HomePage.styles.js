@@ -1,11 +1,10 @@
 export default (theme) => ({
   root: {
-    ...theme.flexColumnCenter,
-    paddingTop: theme.spacing(1.5)
+    paddingTop: theme.spacing(0),
+    paddingBottom: theme.spacing(3),
   },
-  section: {
-    ...theme.flexColumnCenter,
-    padding: theme.spacing(2),
-    textAlign: 'center'
-  }
+  gridItem: {
+    textAlign: 'center',
+    marginTop: theme.spacing(1)
+  },
 })

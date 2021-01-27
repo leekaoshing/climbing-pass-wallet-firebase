@@ -11,13 +11,29 @@ import styles from './PassesList.styles'
 
 const useStyles = makeStyles(styles)
 
-function PassesList({ userSearchList }) {
+function PassesList({ userSearchList, loggedInUser }) {
 	const firebase = useFirebase()
 	const classes = useStyles()
 
 	function isLoggedInUser(user) {
 		return user.email === firebase.auth().currentUser.email
 	}
+
+	// const a = []
+	// const b = []
+	// const c = []
+	// Object.keys(userSearchList).forEach(email => {
+	// 	const user = userSearchList[email]
+	// 	if (isLoggedInUser(user)) {
+	// 		a.push(email)
+	// 	} else if (loggedInUser.friends.includes(user.uid)) {
+	// 		b.push(email)
+	// 	} else {
+	// 		c.push(email)
+	// 	}
+	// })
+	// const users = a.concat(b).concat(c)
+	// const users = a.concat(b.sort()).concat(c.sort()) // For sorting users alphabetically within each category
 
 	const users = Object.keys(userSearchList)
 
@@ -36,7 +52,7 @@ function PassesList({ userSearchList }) {
 							users.map(email => {
 								const user = userSearchList[email]
 								return (
-									<Grid item xs={6} sm={3} md={3} lg={2} xl={1} className={classes.gridItem} key={user.email}>
+									<Grid item xs={6} sm={4} md={4} lg={3} xl={3} className={classes.gridItem} key={user.email}>
 										<PersonTile user={user} editable={isLoggedInUser(user)} />
 									</Grid>
 								)
@@ -49,7 +65,8 @@ function PassesList({ userSearchList }) {
 }
 
 PassesList.propTypes = {
-	userSearchList: PropTypes.object
+	userSearchList: PropTypes.object,
+	loggedInUser: PropTypes.object
 }
 
 export default PassesList

@@ -11,23 +11,23 @@ import ResetPasswordRoute from './ResetPassword'
 export default function createRoutes() {
   return (
     <CoreLayout>
-      <Switch>
-        {
-          /* Build Route components from routeSettings */
-          [
-            Home,
-            AccountRoute,
-            SignupRoute,
-            LoginRoute,
-            AboutRoute,
-            ResetPasswordRoute
-            /* Add More Routes Here */
-          ].map((settings) => (
-            <Route exact key={`Route-${settings.path}`} {...settings} />
-          ))
-        }
-        <Redirect from="*" to= "/home"/>
-      </Switch>
+        <Switch>
+          {
+            /* Build Route components from routeSettings */
+            [
+              Home,
+              AccountRoute,
+              SignupRoute,
+              LoginRoute,
+              AboutRoute,
+              ResetPasswordRoute
+              /* Add More Routes Here */
+            ].map((settings) => (
+              <Route exact key={`Route-${settings.path}`} {...settings} />
+            ))
+          }
+          <Redirect from="*" to="/home" />
+        </Switch>
     </CoreLayout>
   )
 }

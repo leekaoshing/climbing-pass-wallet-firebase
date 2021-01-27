@@ -47,7 +47,7 @@ function ConfirmationDialog({ isSubmitDisabled, passDifferences, onSubmit }) {
 
 	return (
 		<>
-			<IconButton variant="outlined" color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.button}>
+			<IconButton color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.button}>
 				<SaveIcon />
 			</IconButton>
 			<Dialog open={showConfirmationDialog} onClose={closeConfirmationDialog}>

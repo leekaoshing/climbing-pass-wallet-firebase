@@ -2,6 +2,7 @@ import Chip from '@material-ui/core/Chip'
 import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
+import Grid from '@material-ui/core/Grid'
 import SearchIcon from '@material-ui/icons/Search'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { USERS_COLLECTION, USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
@@ -13,6 +14,9 @@ import {
 } from 'react-redux-firebase'
 import { addUserToSearchList, removeUserFromSearchList } from '../../../../store/reducers/user'
 import styles from './UserSearch.styles'
+import PeopleIcon from '@material-ui/icons/People'
+import ViewFriends from './components/ViewFriends'
+import { useNotifications } from 'modules/notification'
 
 const useStyles = makeStyles(styles)
 
@@ -21,35 +25,7 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 	const firestore = useFirestore()
 	const firebase = useFirebase()
 	const classes = useStyles()
-
-	const [friendsList, setFriendsList] = useState([loggedInUserPublic])
-	const [searchSuggestions, setSearchSuggestions] = useState([])
-
-	useEffect(() => {
-		setFriendsList(() => [
-			loggedInUserPublic
-		])
-	}, [loggedInUserPublic])
-
-	useEffect(() => {
-		if (loggedInUser.friends.length > 0) {
-			firestore.collection(USERS_PUBLIC_COLLECTION).where(firebase.firestore.FieldPath.documentId(), 'in', loggedInUser.friends)
-				.get()
-				.then(results => {
-					results.forEach(result => {
-						setFriendsList(friendsList => [
-							...friendsList,
-							result.data()
-						])
-					})
-				})
-		}
-	}, [loggedInUser, firebase.firestore.FieldPath, firestore])
-
-	useEffect(() => {
-		const searchedEmails = Object.keys(userSearchList)
-		setSearchSuggestions(() => friendsList.filter(user => !searchedEmails.includes(user.email)))
-	}, [userSearchList, friendsList])
+	const { showError } = useNotifications()
 
 	const [searchText, setSearchText] = useState('')
 	const [error, setError] = useState('')
@@ -64,15 +40,9 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 		}
 	}
 
-	function handleChange(event, value) {
+	function handleChange(event) {
 		setError('')
-		setSearchText(value)
-	}
-
-	function handleSelect(event, value) {
-		setError('')
-		if (value) handleSearch(value)
-		setSearchText('')
+		setSearchText(event.target.value)
 	}
 
 	async function handleSearch(searchText) {
@@ -109,14 +79,14 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 				if (userDetailsResults.empty) {
 					setSearchText('')
 					dispatch(addUserToSearchList({
-						email: searchTextLowerCase,
-						uid: userPublicDetails.uid,
+						...userPublicDetails,
 						isFriend: false
 					}))
 				} else {
 					const userDetails = userDetailsResults.docs[0].data()
 					setSearchText('')
 					dispatch(addUserToSearchList({
+						...userPublicDetails,
 						...userDetails,
 						isFriend: true
 					}))
@@ -131,65 +101,85 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 		setError('')
 	}
 
+	async function handleViewFriends(selectedFriends) {
+		// TODO Maybe show loading screen and then remove when Promise.all?
+		Object.keys(selectedFriends).forEach(uid => {
+			const userPublicDetails = selectedFriends[uid]
+			firestore.collection(USERS_COLLECTION)
+				.where('email', '==', userPublicDetails.email) // TODO Can't query by UID, need backend to solve probably
+				.where('friends', 'array-contains', loggedInUser.uid)
+				.get()
+				.then(userDetailsResult => {
+					if (userDetailsResult.empty) {
+						setSearchText('')
+						dispatch(addUserToSearchList({
+							...userPublicDetails,
+							isFriend: false
+						}))
+					} else {
+						const userDetails = userDetailsResult.docs[0].data()
+						setSearchText('')
+						dispatch(addUserToSearchList({
+							...userPublicDetails,
+							...userDetails,
+							isFriend: true
+						}))
+					}
+				})
+				.catch(error => showError(error.message))
+		})
+	}
+
 	return (
-		<div className={classes.root}>
-			<div className={classes.search} >
-				<Autocomplete
-					id="user-search-field-autocomplete"
-					freeSolo
-					className={classes.searchBox}
-					// style={{ width: 210, marginLeft: '10px', marginRight: '10px' }}
-					options={searchSuggestions.map(option => option.email)}
-					onChange={handleSelect}
-					onInputChange={handleChange}
-					onKeyDown={handleEnter}
-					value={searchText}
-					renderInput={(params) => (
-						<TextField {...params}
-							data-test="user-search-field"
-							label="Search for email...."
-							variant="outlined"
-							helperText={error}
-							error={!!error}
-							onBlur={onBlur}
-						/>
-					)}
-				/>
-				<div className={classes.searchButton}>
-					<IconButton
+		<Grid container className={classes.root}>
+			<Grid item xs={12} md={10} lg={8} className={classes.gridItem}>
+				<div className={classes.search}>
+					<TextField 
+						onChange={handleChange}
+						onKeyDown={handleEnter}
+						data-test="user-search-field"
+						label="Search for email...."
 						variant="outlined"
-						onClick={() => handleSearch(searchText)}
-					>
-						<SearchIcon />
-					</IconButton>
+						value={searchText}
+						helperText={error}
+						error={!!error}
+						onBlur={onBlur}
+					/>
+					<div className={classes.buttons}>
+						<IconButton
+							onClick={() => handleSearch(searchText)}
+							className={classes.iconButton}
+						>
+							<SearchIcon />
+						</IconButton>
+						{/* <IconButton
+							onClick={handleAddFriends}
+							className={classes.iconButton}
+						>
+							<PeopleIcon />
+						</IconButton> */}
+						<ViewFriends loggedInUser={loggedInUser} handleViewFriends={handleViewFriends} />
+					</div>
 				</div>
-			</div>
-			<div className={classes.users}>
-				{/* <Button
-						variant="outlined"
-						onClick={() => handleSearch(searchText)}
-						style={{alignSelf: 'flex-start'}}
-					>
-						Friends
-					</Button> */}
-				{
-					Object.keys(userSearchList).map((email) => {
-						const user = userSearchList[email]
-						const displayText = user.isFriend || user.email === loggedInUserPublic.email ? `${user.firstName} ${user.lastName}` : user.email
-						return (
-							<li key={user.email}>
-								<Chip
-									label={displayText}
-									onDelete={() => handleDelete(user)}
-									className={classes.chip}
-								/>
-							</li>
-						)
-					})
-				}
-			</div>
-			{/* </Paper> */}
-		</div>
+				<div className={classes.users}>
+					{
+						Object.keys(userSearchList).map((email) => {
+							const user = userSearchList[email]
+							const displayText = user.isFriend || user.email === loggedInUserPublic.email ? `${user.firstName} ${user.lastName}` : user.email
+							return (
+								<li key={user.email}>
+									<Chip
+										label={displayText}
+										onDelete={() => handleDelete(user)}
+										className={classes.chip}
+									/>
+								</li>
+							)
+						})
+					}
+				</div>
+			</Grid>
+		</Grid>
 	)
 }
 

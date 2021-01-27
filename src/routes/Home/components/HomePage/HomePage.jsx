@@ -12,6 +12,7 @@ import PassesList from '../PassesList'
 import UpdateResultDialog from '../UpdateResultDialog'
 import UserSearch from '../UserSearch'
 import styles from './HomePage.styles'
+import Grid from '@material-ui/core/Grid'
 
 
 const useStyles = makeStyles(styles)
@@ -43,32 +44,36 @@ function useHome() {
 }
 
 function Home() {
-  const classes = useStyles()
-  const dispatch = useDispatch()
-  const userSearchList = useSelector(selectUserSearchList)
+	const classes = useStyles()
+	const dispatch = useDispatch()
+	const userSearchList = useSelector(selectUserSearchList)
 
-  const {
+	const {
 		uid,
 		users,
 		usersPublic,
 		gyms
-  } = useHome()
+	} = useHome()
 
-  useEffect(() => {
+	useEffect(() => {
 		if (users && users[uid]) dispatch(addUserToSearchList(users[uid]))
 	}, [dispatch, uid, users])
-  
-  if (!isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !users[uid] || !usersPublic || !usersPublic[uid]) {
+
+	if (!isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !users[uid] || !usersPublic || !usersPublic[uid]) {
 		return <LoadingSpinner />
 	}
 
-  return (
-    <div className={classes.root}>
-      <UserSearch userSearchList={userSearchList} loggedInUser={users[uid]} loggedInUserPublic={usersPublic[uid]}/>
-      <PassesList userSearchList={userSearchList}/>
-      <UpdateResultDialog />
-    </div>
-  )
+	return (
+		// <div className={classes.root}>
+		<Grid container className={classes.root} justify="center">
+			<Grid item xs={12} md={10} lg={8} className={classes.gridItem}>
+				<UserSearch userSearchList={userSearchList} loggedInUser={users[uid]} loggedInUserPublic={usersPublic[uid]} />
+				<PassesList userSearchList={userSearchList} loggedInUser={users[uid]}/>
+				<UpdateResultDialog />
+			</Grid>
+		</Grid>
+		// </div>
+	)
 }
 
 export default Home

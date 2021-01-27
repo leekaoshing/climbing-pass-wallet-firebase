@@ -6,6 +6,7 @@ export default (theme) => ({
   content: {
     ...theme.flexColumnCenter,
     padding: theme.spacing(0),
+    // overflowY: 'scroll'
   },
   formActions: {
     ...theme.flexColumnCenter,

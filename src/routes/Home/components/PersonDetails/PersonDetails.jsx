@@ -138,10 +138,10 @@ function PersonDetails({ user, editable }) {
 
 			<CardContent className={classes.content}>
 				{
-					<div className={classes.gymsContent}>
+					<div className={classes.gymsContent}> {/* TODO Limit size of this element and add scroll wheel overflow */}
 						{
 							!isEmpty(editableUserPasses) ?
-								<List>
+								<List> 
 									{
 										Object.keys(editableUserPasses).sort().map((gymId) => {
 											counter += 1
@@ -179,7 +179,6 @@ function PersonDetails({ user, editable }) {
 										<AddGymDialog gymsToAdd={getGymsToAdd()} addGymFunction={addGymToUser} />
 
 										<IconButton
-											variant="outlined"
 											disabled={hasNoChanges}
 											onClick={resetUserPasses}
 										>

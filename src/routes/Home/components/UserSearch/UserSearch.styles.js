@@ -1,8 +1,16 @@
 export default (theme) => ({
   root: {
-    ...theme.flexColumnCenter,
+    // ...theme.flexColumnCenter,
     padding: theme.spacing(0),
     flexGrow: '2',
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  gridItem: {
+    textAlign: 'center',
+    padding: theme.spacing(0),
+    flexGrow: 2,
+    // marginTop: theme.spacing(2)
   },
   users: {
     display: 'flex',
@@ -21,12 +29,19 @@ export default (theme) => ({
     padding: theme.spacing(0.5)
   },
   searchBox: {
-    width: '250px',
+    width: '70%',
     padding: theme.spacing(0.5)
   },
-  searchButton: {
-    marginTop: '5px',
+  buttons: {
+    marginTop: theme.spacing(0.2),
     justifyContent: 'center',
-    padding: theme.spacing(0.5),
+    // padding: theme.spacing(0.5),
+    display: 'flex'
   },
+  iconButton: {
+    justifyContent: 'space-between'
+    // marginTop: '6px',
+    // marginRight: theme.spacing(1),
+    // padding: theme.spacing(0.5),
+  }
 })

@@ -72,7 +72,7 @@ function PersonTile({ user, editable }) {
 								// </div>
 							} className={classes.email} />
 							<CardContent className={classes.textContent}>
-								<p>This user has not added you as a friend yet.</p>
+								<p>This person has not added you as a friend yet.</p>
 							</CardContent>
 						</>
 

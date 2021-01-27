@@ -1,7 +1,7 @@
 export default (theme) => ({
   root: {
     justifyContent: 'center',
-    padding: theme.spacing(0),
+    paddingBottom: theme.spacing(1),
     height: '100%',
   },
   card: {

@@ -39,7 +39,7 @@ function AddGymDialog({ gymsToAdd, addGymFunction }) {
 
 	return (
 		<>
-			<IconButton variant="outlined" onClick={openAddGymDialog} disabled={isButtonDisabled()}>
+			<IconButton onClick={openAddGymDialog} disabled={isButtonDisabled()}>
 				<AddIcon />
 			</IconButton>
 			<Dialog open={showAddGymDialog} onClose={closeAddGymDialog}>
