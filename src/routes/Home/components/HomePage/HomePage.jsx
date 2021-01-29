@@ -1,7 +1,8 @@
+import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { GYMS_COLLECTION, USERS_COLLECTION, USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	isLoaded,
@@ -9,13 +10,11 @@ import {
 	useFirestoreConnect
 } from 'react-redux-firebase'
 import { addUserToSearchList, selectUserSearchList } from 'store/reducers/user'
+import User from '../../../../model/User'
 import PassesList from '../PassesList'
 import UpdateResultDialog from '../UpdateResultDialog'
 import UserSearch from '../UserSearch'
 import styles from './HomePage.styles'
-import Grid from '@material-ui/core/Grid'
-import User from '../../../../model/User'
-
 
 const useStyles = makeStyles(styles)
 
@@ -58,12 +57,14 @@ function Home() {
 		gyms
 	} = useHome()
 
+	const [loading, setLoading] = useState(true)
 	useEffect(() => {
 		// This reruns if you add/remove friends because the "users" object (since users[uid].friends changes)
 		// if (users && users[uid]) dispatch(addUserToSearchList(users[uid]))
 
-		// This workaround will fetch data even though the firestore redux hook is used, but it's a one time thing so maybe ok?
-		firestore.collection(USERS_COLLECTION).doc(uid).get()
+		setLoading(true)
+		setTimeout(() => { // Delay is for user documents to be created after signup, as signup immediately redirects to homepage once an account is created
+			firestore.collection(USERS_COLLECTION).doc(uid).get()
 			.then(result => {
 				const user = result.data()
 				dispatch(addUserToSearchList(User.createUser(
@@ -75,10 +76,12 @@ function Home() {
 					user.friends,
 					user.passes
 				)))
+				setLoading(false)
 			})
+		}, 200)
 	}, [dispatch, firestore, uid])
 
-	if (!isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !users[uid] || !usersPublic || !usersPublic[uid]) {
+	if (loading || !isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !users[uid] || !usersPublic || !usersPublic[uid]) {
 		return <LoadingSpinner />
 	}
 
