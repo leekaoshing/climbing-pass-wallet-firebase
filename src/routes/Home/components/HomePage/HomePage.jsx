@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { GYMS_COLLECTION, USERS_COLLECTION, USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
+import { useNotifications } from 'modules/notification'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -49,6 +50,7 @@ function Home() {
 	const dispatch = useDispatch()
 	const userSearchList = useSelector(selectUserSearchList)
 	const firestore = useFirestore()
+	const { showError } = useNotifications()
 
 	const {
 		uid,
@@ -78,7 +80,11 @@ function Home() {
 				)))
 				setLoading(false)
 			})
-		}, 200)
+			.catch(error => {
+				showError(error.message)
+				setLoading(false)
+			})
+		}, 500)
 	}, [dispatch, firestore, uid])
 
 	if (loading || !isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !users[uid] || !usersPublic || !usersPublic[uid]) {
