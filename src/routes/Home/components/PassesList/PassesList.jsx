@@ -3,20 +3,16 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {
-	useFirebase
-} from 'react-redux-firebase'
 import PersonTile from '../PersonTile'
 import styles from './PassesList.styles'
 
 const useStyles = makeStyles(styles)
 
 function PassesList({ userSearchList, loggedInUser }) {
-	const firebase = useFirebase()
 	const classes = useStyles()
 
 	function isLoggedInUser(user) {
-		return user.email === firebase.auth().currentUser.email
+		return user.email === loggedInUser.email
 	}
 
 	// const a = []

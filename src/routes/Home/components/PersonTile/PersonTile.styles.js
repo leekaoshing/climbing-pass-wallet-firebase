@@ -16,10 +16,9 @@ export default (theme) => ({
     // boxSizing: 'border-box',
     // overflowY: 'scroll'
   },
-    email: {
+  name: {
     textAlign: 'center',
-    marginTop: theme.spacing(2),
-    padding: theme.spacing(0)
+    padding: theme.spacing(0.5)
   },
   filler: {
     width: '100%',
@@ -27,6 +26,10 @@ export default (theme) => ({
   },
   content: {
     padding: theme.spacing(0)
+  },
+  cardContent: {
+    ...theme.flexColumnCenter,
+    padding: theme.spacing(0),
   },
   textContent: {
     textAlign: 'center',

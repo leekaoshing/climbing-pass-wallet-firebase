@@ -17,7 +17,21 @@ export default theme => ({
     ...theme.flexColumnCenter,
     justifyContent: 'center',
   },
-  signupButton: {
-    fontSize: '1.2rem'
+  buttonsGroup: {
+    width: '100%',
+    display: 'flex',
+    marginTop: theme.spacing(2.5),
+    justifyContent: 'space-evenly'
+  },
+  buttons: {
+    fontSize: '1.0rem',
+  },
+  guidePhoto: {
+    width: '100%',
+    maxWidth: '130rem',
+    marginTop: '1rem',
+    marginBottom: '0.5rem',
+    height: 'auto',
+    cursor: 'pointer'
   },
 })

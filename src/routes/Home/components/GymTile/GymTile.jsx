@@ -16,7 +16,6 @@ const useStyles = makeStyles(styles)
 
 function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, editable, setPassesFunction }) {
 	const classes = useStyles()
-	const dispatch = useDispatch()
 
 	const getTextStyle = () => {
 		if (passDifference !== 0) {
@@ -38,7 +37,6 @@ function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, edit
 
 	return (
 		<ListItem>
-			{/* <Paper className={classes.root}> */}
 			<div className={classes.top}>
 				<Grid container justify="center">
 					<Grid item xs={editable ? 6 : 4} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -70,14 +68,9 @@ function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, edit
 								<span style={getTextStyle()} data-test={`passes-${gymId}`} >{numberOfPasses}</span>
 							</Grid>
 					}
-					{/* <Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-									<IconButton aria-label="buyPasses" onClick={() => openGymLink(gymLink)} className={classes.buyButton} variant="contained">
-										<span style={{ fontSize: 8 }} data-test={`gym-link-${gymId}`}>Buy</span> &nbsp; <CallMadeIcon style={{ fontSize: 8 }} />
-									</IconButton>
-								</Grid> */}
 				</Grid>
 			</div>
-		</ListItem >
+		</ListItem>
 	)
 }
 

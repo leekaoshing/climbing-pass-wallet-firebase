@@ -1,8 +1,13 @@
+import {
+	Button, Dialog,
+	DialogActions,
+	DialogContent,
+	IconButton
+} from '@material-ui/core'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
-import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import CancelIcon from '@material-ui/icons/Cancel'
@@ -12,7 +17,7 @@ import { USERS_COLLECTION } from 'constants/firebasePaths'
 import { cloneDeep } from 'lodash'
 import { useNotifications } from 'modules/notification'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	useFirestore
@@ -27,7 +32,9 @@ const useStyles = makeStyles(styles)
 function PersonTile({ user, editable }) {
 	const dispatch = useDispatch()
 	const firestore = useFirestore()
-	const { showError } = useNotifications()
+	const { showError, showSuccess } = useNotifications()
+
+	const [showRemoveFriendDialog, setShowRemoveFriendDialog] = useState(false)
 
 	const classes = useStyles()
 	const auth = useSelector(state => state.firebase.auth)
@@ -43,7 +50,9 @@ function PersonTile({ user, editable }) {
 				...loggedInUser.friends,
 				user.uid
 			]
-		}).catch(error => showError(error.message))
+		})
+			.then(() => showSuccess(`Successfully added ${user.firstName} ${user.lastName} to friend list.`))
+			.catch(error => showError(error.message))
 	}
 
 	function removeFriend() {
@@ -51,28 +60,67 @@ function PersonTile({ user, editable }) {
 		friends.splice(friends.indexOf(user.uid), 1)
 		firestore.collection(USERS_COLLECTION).doc(auth.uid).update({
 			friends
-		}).catch(error => showError(error.message))
+		})
+			.then(() => {
+				showSuccess(`Successfully removed ${user.firstName} ${user.lastName} from friend list.`)
+				handleCloseRemoveFriendDialog()
+			})
+			.catch(error => showError(error.message))
 	}
 
-	const isSelf = user.uid === auth.uid
-	const areYouTheirFriend = isSelf || user.isFriend
-	const areTheyYourFriend = loggedInUser.friends.includes(user.uid)
+
+	const [isSelf, setIsSelf] = useState(false)
+	useEffect(() => {
+		setIsSelf(user.uid === auth.uid)
+	}, [user, auth])
+
+	const [isViewable, setIsViewable] = useState(false)
+	useEffect(() => {
+		setIsViewable(isSelf || user.canView)
+	}, [isSelf, user])
+
+	const [areTheyYourFriend, setAreTheyYourFriend] = useState(false)
+	useEffect(() => {
+		setAreTheyYourFriend(loggedInUser.friends.includes(user.uid))
+	}, [loggedInUser, user])
+
+	const [fullName, setFullName] = useState('')
+	useEffect(() => {
+		setFullName(`${user.firstName} ${user.lastName}`)
+	}, [user])
+
+	function handleOpenRemoveFriendDialog() {
+		setShowRemoveFriendDialog(true)
+	}
+
+	function handleCloseRemoveFriendDialog() {
+		setShowRemoveFriendDialog(false)
+	}
+
+	const removeFriendsConfirmationDialog = (
+		<Dialog open={showRemoveFriendDialog} onClose={handleCloseRemoveFriendDialog}>
+			<DialogContent>Remove {fullName} from friend list?</DialogContent>
+			<DialogActions>
+				<Button onClick={handleCloseRemoveFriendDialog}>No</Button>
+				<Button onClick={removeFriend}>Yes</Button>
+			</DialogActions>
+		</Dialog>
+	)
 
 	return (
 		<div className={classes.root}  >
+			{removeFriendsConfirmationDialog}
 			<Card className={classes.card}>
 				{
-					areYouTheirFriend ?
+					isViewable ?
 						<PersonDetails user={user} editable={editable} />
 						:
 						<>
 							<CardHeader disableTypography title={
-								// <div style={{ overflow: "hidden", textOverflow: "ellipsis", width: '11rem' }}>
-									<Typography variant="subtitle2" data-test="user-email-card">{user.email}</Typography>
-								// </div>
-							} className={classes.email} />
-							<CardContent className={classes.textContent}>
-								<p>This person has not added you as a friend yet.</p>
+								<Typography variant="h6" data-test="user-name-card">{fullName}</Typography>
+							} className={classes.name} />
+							<CardContent className={classes.cardContent}>
+								<p className={classes.textContent}>This person has not added you as a friend yet.</p>
 							</CardContent>
 						</>
 
@@ -84,7 +132,7 @@ function PersonTile({ user, editable }) {
 						isSelf ? null
 							:
 							areTheyYourFriend ?
-								<IconButton size="small" onClick={removeFriend}>
+								<IconButton size="small" onClick={handleOpenRemoveFriendDialog}>
 									<PersonAddDisabledIcon fontSize="small" />
 								</IconButton>
 								:

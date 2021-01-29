@@ -5,6 +5,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	isLoaded,
+	useFirestore,
 	useFirestoreConnect
 } from 'react-redux-firebase'
 import { addUserToSearchList, selectUserSearchList } from 'store/reducers/user'
@@ -13,6 +14,7 @@ import UpdateResultDialog from '../UpdateResultDialog'
 import UserSearch from '../UserSearch'
 import styles from './HomePage.styles'
 import Grid from '@material-ui/core/Grid'
+import User from '../../../../model/User'
 
 
 const useStyles = makeStyles(styles)
@@ -47,6 +49,7 @@ function Home() {
 	const classes = useStyles()
 	const dispatch = useDispatch()
 	const userSearchList = useSelector(selectUserSearchList)
+	const firestore = useFirestore()
 
 	const {
 		uid,
@@ -56,23 +59,37 @@ function Home() {
 	} = useHome()
 
 	useEffect(() => {
-		if (users && users[uid]) dispatch(addUserToSearchList(users[uid]))
-	}, [dispatch, uid, users])
+		// This reruns if you add/remove friends because the "users" object (since users[uid].friends changes)
+		// if (users && users[uid]) dispatch(addUserToSearchList(users[uid]))
+
+		// This workaround will fetch data even though the firestore redux hook is used, but it's a one time thing so maybe ok?
+		firestore.collection(USERS_COLLECTION).doc(uid).get()
+			.then(result => {
+				const user = result.data()
+				dispatch(addUserToSearchList(User.createUser(
+					true,
+					user.firstName,
+					user.lastName,
+					user.email,
+					user.uid,
+					user.friends,
+					user.passes
+				)))
+			})
+	}, [dispatch, firestore, uid])
 
 	if (!isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !users[uid] || !usersPublic || !usersPublic[uid]) {
 		return <LoadingSpinner />
 	}
 
 	return (
-		// <div className={classes.root}>
 		<Grid container className={classes.root} justify="center">
 			<Grid item xs={12} md={10} lg={8} className={classes.gridItem}>
-				<UserSearch userSearchList={userSearchList} loggedInUser={users[uid]} loggedInUserPublic={usersPublic[uid]} />
-				<PassesList userSearchList={userSearchList} loggedInUser={users[uid]}/>
+				<UserSearch userSearchList={userSearchList} loggedInUser={users[uid]} />
+				<PassesList userSearchList={userSearchList} loggedInUser={users[uid]} />
 				<UpdateResultDialog />
 			</Grid>
 		</Grid>
-		// </div>
 	)
 }
 

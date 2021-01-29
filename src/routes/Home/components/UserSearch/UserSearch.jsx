@@ -1,29 +1,25 @@
 import Chip from '@material-ui/core/Chip'
+import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
 import SearchIcon from '@material-ui/icons/Search'
-import Autocomplete from '@material-ui/lab/Autocomplete'
 import { USERS_COLLECTION, USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
-import PropTypes from 'prop-types'
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import {
-	useFirebase, useFirestore
-} from 'react-redux-firebase'
-import { addUserToSearchList, removeUserFromSearchList } from '../../../../store/reducers/user'
-import styles from './UserSearch.styles'
-import PeopleIcon from '@material-ui/icons/People'
-import ViewFriends from './components/ViewFriends'
 import { useNotifications } from 'modules/notification'
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useFirestore } from 'react-redux-firebase'
+import User from '../../../../model/User'
+import { addUserToSearchList, removeUserFromSearchList } from '../../../../store/reducers/user'
+import ViewFriends from './components/ViewFriends'
+import styles from './UserSearch.styles'
 
 const useStyles = makeStyles(styles)
 
-function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
+function UserSearch({ userSearchList, loggedInUser }) {
 	const dispatch = useDispatch()
 	const firestore = useFirestore()
-	const firebase = useFirebase()
 	const classes = useStyles()
 	const { showError } = useNotifications()
 
@@ -78,18 +74,27 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 
 				if (userDetailsResults.empty) {
 					setSearchText('')
-					dispatch(addUserToSearchList({
-						...userPublicDetails,
-						isFriend: false
-					}))
+					dispatch(addUserToSearchList(User.createUser(
+						false,
+						userPublicDetails.firstName,
+						userPublicDetails.lastName,
+						userPublicDetails.email,
+						userPublicDetails.uid,
+						null,
+						null
+					)))
 				} else {
 					const userDetails = userDetailsResults.docs[0].data()
 					setSearchText('')
-					dispatch(addUserToSearchList({
-						...userPublicDetails,
-						...userDetails,
-						isFriend: true
-					}))
+					dispatch(addUserToSearchList(User.createUser(
+						true,
+						userPublicDetails.firstName,
+						userPublicDetails.lastName,
+						userPublicDetails.email,
+						userPublicDetails.uid,
+						userDetails.friends,
+						userDetails.passes
+					)))
 				}
 			} catch (error) {
 				setError(error.message)
@@ -101,32 +106,40 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 		setError('')
 	}
 
-	async function handleViewFriends(selectedFriends) {
-		// TODO Maybe show loading screen and then remove when Promise.all?
-		Object.keys(selectedFriends).forEach(uid => {
-			const userPublicDetails = selectedFriends[uid]
-			firestore.collection(USERS_COLLECTION)
-				.where('email', '==', userPublicDetails.email) // TODO Can't query by UID, need backend to solve probably
-				.where('friends', 'array-contains', loggedInUser.uid)
-				.get()
-				.then(userDetailsResult => {
-					if (userDetailsResult.empty) {
-						setSearchText('')
-						dispatch(addUserToSearchList({
-							...userPublicDetails,
-							isFriend: false
-						}))
-					} else {
-						const userDetails = userDetailsResult.docs[0].data()
-						setSearchText('')
-						dispatch(addUserToSearchList({
-							...userPublicDetails,
-							...userDetails,
-							isFriend: true
-						}))
-					}
-				})
-				.catch(error => showError(error.message))
+	async function handleViewFriends(friendsList) {
+		Object.keys(friendsList).forEach(uid => {
+			const userPublicDetails = friendsList[uid]
+
+			const email = userPublicDetails.email
+
+			if (userPublicDetails.isSelected) {
+				if (userSearchList[email] === undefined) {
+					firestore.collection(USERS_COLLECTION)
+						.where('email', '==', email) // TODO for future: can't query by UID, need backend to solve probably
+						.where('friends', 'array-contains', loggedInUser.uid)
+						.get()
+						.then(userDetailsResult => {
+							if (userDetailsResult.empty) {
+								setSearchText('')
+								dispatch(addUserToSearchList({
+									...userPublicDetails,
+									canView: false
+								}))
+							} else {
+								const userDetails = userDetailsResult.docs[0].data()
+								setSearchText('')
+								dispatch(addUserToSearchList({
+									...userPublicDetails,
+									...userDetails,
+									canView: true
+								}))
+							}
+						})
+						.catch(error => showError(error.message))
+				}
+			} else {
+				dispatch(removeUserFromSearchList(email))
+			}
 		})
 	}
 
@@ -134,7 +147,7 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 		<Grid container className={classes.root}>
 			<Grid item xs={12} md={10} lg={8} className={classes.gridItem}>
 				<div className={classes.search}>
-					<TextField 
+					<TextField
 						onChange={handleChange}
 						onKeyDown={handleEnter}
 						data-test="user-search-field"
@@ -152,20 +165,14 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 						>
 							<SearchIcon />
 						</IconButton>
-						{/* <IconButton
-							onClick={handleAddFriends}
-							className={classes.iconButton}
-						>
-							<PeopleIcon />
-						</IconButton> */}
-						<ViewFriends loggedInUser={loggedInUser} handleViewFriends={handleViewFriends} />
+						<ViewFriends loggedInUser={loggedInUser} handleViewFriends={handleViewFriends} userSearchList={userSearchList} />
 					</div>
 				</div>
 				<div className={classes.users}>
 					{
 						Object.keys(userSearchList).map((email) => {
 							const user = userSearchList[email]
-							const displayText = user.isFriend || user.email === loggedInUserPublic.email ? `${user.firstName} ${user.lastName}` : user.email
+							const displayText = `${user.firstName} ${user.lastName}`
 							return (
 								<li key={user.email}>
 									<Chip
@@ -186,7 +193,6 @@ function UserSearch({ userSearchList, loggedInUser, loggedInUserPublic }) {
 UserSearch.propTypes = {
 	userSearchList: PropTypes.object,
 	loggedInUser: PropTypes.object,
-	loggedInUserPublic: PropTypes.object
 }
 
 export default UserSearch

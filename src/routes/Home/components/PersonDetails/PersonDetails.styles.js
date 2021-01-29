@@ -6,7 +6,6 @@ export default (theme) => ({
   content: {
     ...theme.flexColumnCenter,
     padding: theme.spacing(0),
-    // overflowY: 'scroll'
   },
   formActions: {
     ...theme.flexColumnCenter,
@@ -16,10 +15,12 @@ export default (theme) => ({
     width: '80%'
   },
   noPasses: {
-    marginTop: '0.5rem',
-    textAlign: 'center'
+    textAlign: 'center',
+    padding: theme.spacing(2)
   },
   gymsContent: {
     minHeight: '150px',
+    maxHeight: '230px',
+    overflowY: 'auto'
   }
 })

@@ -11,15 +11,12 @@ export default (theme) => ({
   root: {
     display: 'flex',
   },
-  button: {
-    display: 'block',
-    marginTop: theme.spacing(2),
-  },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
   },
   iconButton: {
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginTop: theme.spacing(0.3)
   }
 })
