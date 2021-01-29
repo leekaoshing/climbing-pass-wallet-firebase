@@ -44,12 +44,6 @@ function SignupPage() {
     } catch (error) {
       showError(error.message)
     }
-    // return firebase
-    //   .createUser(creds, {
-    //     email: creds.email,
-    //     username: creds.username
-    //   })
-    //   .catch((err) => showError(err.message))
   }
 
   async function generateUserDocument(user, userData) {
