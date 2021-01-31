@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import styles from './ConfirmationDialog.styles'
+import Tooltip from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles(styles)
 
@@ -47,9 +48,13 @@ function ConfirmationDialog({ isSubmitDisabled, passDifferences, onSubmit }) {
 
 	return (
 		<>
-			<IconButton color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.button}>
-				<SaveIcon />
-			</IconButton>
+			<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Save changes">
+				<span>
+					<IconButton color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.button}>
+						<SaveIcon />
+					</IconButton>
+				</span>
+			</Tooltip>
 			<Dialog open={showConfirmationDialog} onClose={closeConfirmationDialog}>
 				<DialogTitle id="confirmation-dialog-title">Confirm changes</DialogTitle>
 				<DialogContent>

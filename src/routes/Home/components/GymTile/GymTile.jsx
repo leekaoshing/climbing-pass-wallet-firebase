@@ -9,7 +9,6 @@ import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { useDispatch } from 'react-redux'
 import styles from './GymTile.styles'
 
 const useStyles = makeStyles(styles)
@@ -51,7 +50,9 @@ function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, edit
 							<>
 								<Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 									<IconButton aria-label="decrementPass" data-test={`decrement-pass-${gymId}`} onClick={() => changePass(gymId, -1)}>
-										<RemoveIcon className={classes.icons} />
+										<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Subtract pass">
+											<RemoveIcon className={classes.icons} />
+										</Tooltip>
 									</IconButton>
 								</Grid>
 								<Grid item xs={2} style={{ display: 'grid', alignItems: 'center', justifyContent: 'center', width: '2rem' }}>
@@ -59,7 +60,9 @@ function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, edit
 								</Grid>
 								<Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 									<IconButton aria-label="incrementPass" data-test={`increment-pass-${gymId}`} onClick={() => changePass(gymId, 1)}>
-										<AddIcon className={classes.icons} />
+										<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Add pass">
+											<AddIcon className={classes.icons} />
+										</Tooltip>
 									</IconButton>
 								</Grid>
 							</>

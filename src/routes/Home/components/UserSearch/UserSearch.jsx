@@ -168,7 +168,7 @@ function UserSearch({ userSearchList, loggedInUser }) {
 						<ViewFriends loggedInUser={loggedInUser} handleViewFriends={handleViewFriends} userSearchList={userSearchList} />
 					</div>
 				</div>
-				<div className={classes.users}>
+				{/* <div className={classes.users}>
 					{
 						Object.keys(userSearchList).map((email) => {
 							const user = userSearchList[email]
@@ -184,7 +184,7 @@ function UserSearch({ userSearchList, loggedInUser }) {
 							)
 						})
 					}
-				</div>
+				</div> */}
 			</Grid>
 		</Grid>
 	)

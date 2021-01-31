@@ -1,7 +1,7 @@
 export default (theme) => ({
   root: {
     ...theme.flexColumnCenter,
-    paddingTop: theme.spacing(0.5),
+    paddingTop: theme.spacing(2),
     width: '100%'
   },
   gridItem: {

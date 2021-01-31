@@ -85,7 +85,7 @@ function Home() {
 				setLoading(false)
 			})
 		}, 500)
-	}, [dispatch, firestore, uid])
+	}, [dispatch, firestore, uid, showError])
 
 	if (loading || !isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !users[uid] || !usersPublic || !usersPublic[uid]) {
 		return <LoadingSpinner />

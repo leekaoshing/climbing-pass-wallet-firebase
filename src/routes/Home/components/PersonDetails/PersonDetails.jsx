@@ -22,6 +22,7 @@ import AddGymDialog from '../AddGymDialog'
 import ConfirmationDialog from '../ConfirmationDialog'
 import GymTile from '../GymTile'
 import styles from './PersonDetails.styles'
+import Tooltip from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles(styles)
 
@@ -153,7 +154,7 @@ function PersonDetails({ user, editable }) {
 					<div className={classes.gymsContent}>
 						{
 							!isEmpty(editableUserPasses) ?
-								<List> 
+								<List>
 									{
 										Object.keys(editableUserPasses).sort().map((gymId) => {
 											counter += 1
@@ -190,12 +191,17 @@ function PersonDetails({ user, editable }) {
 									<>
 										<AddGymDialog gymsToAdd={getGymsToAdd()} addGymFunction={addGymToUser} />
 
-										<IconButton
-											disabled={hasNoChanges}
-											onClick={resetUserPasses}
-										>
-											<ReplayIcon />
-										</IconButton>
+										<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Reset changes">
+											<span>
+												<IconButton
+													disabled={hasNoChanges}
+													onClick={resetUserPasses}
+												>
+
+													<ReplayIcon />
+												</IconButton>
+											</span>
+										</Tooltip>
 										<ConfirmationDialog isSubmitDisabled={hasNoChanges} passDifferences={passDifferences} onSubmit={submitChanges} />
 									</>
 							}

@@ -25,7 +25,7 @@ import {
 import { removeUserFromSearchList } from '../../../../store/reducers/user'
 import PersonDetails from '../PersonDetails'
 import styles from './PersonTile.styles'
-
+import Tooltip from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles(styles)
 
@@ -132,21 +132,27 @@ function PersonTile({ user, editable }) {
 						isSelf ? null
 							:
 							areTheyYourFriend ?
-								<IconButton size="small" onClick={handleOpenRemoveFriendDialog}>
-									<PersonAddDisabledIcon fontSize="small" />
-								</IconButton>
+								<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Remove friend">
+									<IconButton size="small" onClick={handleOpenRemoveFriendDialog}>
+										<PersonAddDisabledIcon fontSize="small" />
+									</IconButton>
+								</Tooltip>
 								:
-								<IconButton size="small" onClick={addFriend}>
-									<PersonAddIcon color="primary" fontSize="small" />
-								</IconButton>
+								<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Add friend">
+									<IconButton size="small" onClick={addFriend}>
+										<PersonAddIcon color="primary" fontSize="small" />
+									</IconButton>
+								</Tooltip>
 					}
 
 					<div className={classes.filler}></div>
-					<IconButton size="small"
-						onClick={() => removeUser(user)}
-					>
-						<CancelIcon fontSize="small" />
-					</IconButton>
+					<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Remove person">
+						<IconButton size="small"
+							onClick={() => removeUser(user)}
+						>
+							<CancelIcon fontSize="small" />
+						</IconButton>
+					</Tooltip>
 				</CardActions>
 			</Card>
 		</div>

@@ -1,7 +1,7 @@
 import {
 	Dialog,
 	DialogContent,
-	DialogTitle, 
+	DialogTitle,
 	IconButton,
 	List,
 	ListItem,
@@ -12,6 +12,7 @@ import AddIcon from '@material-ui/icons/Add'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import styles from './AddGymDialog.styles'
+import Tooltip from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles(styles)
 
@@ -39,14 +40,16 @@ function AddGymDialog({ gymsToAdd, addGymFunction }) {
 
 	return (
 		<>
-			<IconButton onClick={openAddGymDialog} disabled={isButtonDisabled()}>
-				<AddIcon />
-			</IconButton>
+			<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Add gym">
+				<IconButton onClick={openAddGymDialog} disabled={isButtonDisabled()}>
+					<AddIcon />
+				</IconButton>
+			</Tooltip>
 			<Dialog open={showAddGymDialog} onClose={closeAddGymDialog}>
 				<DialogTitle id="add-gym-dialog-title">Add gym</DialogTitle>
 				<DialogContent>
 					<List>
-						{	
+						{
 							Object.keys(gymsToAdd).map(gymId => {
 								return (
 									<ListItem key={`add-gym-list-${gymId}`} button onClick={() => handleSelect(gymId)}>

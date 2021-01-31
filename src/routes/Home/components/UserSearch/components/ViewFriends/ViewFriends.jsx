@@ -11,6 +11,7 @@ import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormGroup from '@material-ui/core/FormGroup'
 import { makeStyles } from '@material-ui/core/styles'
+import Tooltip from '@material-ui/core/Tooltip'
 import PeopleIcon from '@material-ui/icons/People'
 import { USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
 import PropTypes from 'prop-types'
@@ -41,14 +42,14 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 		}))
 	}, [loggedInUser])
 
+	const [friendsInRedux, setFriendsInRedux] = useState(loggedInUser.friends)
 	useEffect(() => {
-		if (loggedInUser.friends.length > 0) {
-			firestore.collection(USERS_PUBLIC_COLLECTION).where(firebase.firestore.FieldPath.documentId(), 'in', loggedInUser.friends)
+		if (friendsInRedux.length > 0) {
+			firestore.collection(USERS_PUBLIC_COLLECTION).where(firebase.firestore.FieldPath.documentId(), 'in', friendsInRedux)
 				.get()
 				.then(results => {
 					results.forEach(result => {
 						const userPublicData = result.data()
-
 						setFriendsList(friendsList => ({
 							...friendsList,
 							[userPublicData.uid]: {
@@ -59,33 +60,42 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 					})
 				})
 		}
-	}, [loggedInUser, firebase.firestore.FieldPath, firestore])
+	}, [friendsInRedux, firebase.firestore.FieldPath, firestore])
 
 	useEffect(() => {
 		setFriendsList(friendsList => {
+			// Add new friends using details from userSearchList
+			const userSearchListValues = Object.values(userSearchList)
+			loggedInUser.friends.filter(uid => !Object.keys(friendsList).includes(uid)).forEach(newFriendUid => {
+				const newFriend = userSearchListValues.filter(user => user.uid === newFriendUid)[0]
+				friendsList[newFriendUid] = {
+					...newFriend,
+					isSelected: true
+				}
+			})
+
+
+			// Set correct state for all existing friends
+			const emailsInSearchList = Object.keys(userSearchList)
 			Object.keys(friendsList).forEach(uid => {
 				const user = friendsList[uid]
-				if (userSearchList[user.email] !== undefined) {
-					friendsList = {
-						...friendsList,
-						[uid]: {
-							...user,
-							isSelected: true
-						}
+				if (!loggedInUser.friends.includes(uid) && loggedInUser.uid !== uid) { // Friend was deleted
+					delete friendsList[uid]
+				} else if (emailsInSearchList.includes(user.email)) { // Friend is in search list, so is selected
+					friendsList[uid] = {
+						...friendsList[uid],
+						isSelected: true
 					}
-				} else {
-					friendsList = {
-						...friendsList,
-						[uid]: {
-							...user,
-							isSelected: false
-						}
+				} else { // Friend is not in search list, so is not selected
+					friendsList[uid] = {
+						...friendsList[uid],
+						isSelected: false
 					}
 				}
 			})
 			return friendsList
 		})
-	}, [userSearchList])
+	}, [loggedInUser, userSearchList])
 
 	function handleChange(event) {
 		const uid = event.target.name
@@ -112,27 +122,24 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 		setOpen(true)
 	}
 
-	const [friendUids, setFriendUids] = useState([])
-	useEffect(() => {
-		setFriendUids(Object.keys(friendsList))
-	}, [friendsList])
-
 	return (
 		<div>
-			<IconButton
-				onClick={handleOpen}
-				className={classes.iconButton}
-			>
-				<PeopleIcon />
-			</IconButton>
+			<Tooltip disableFocusListener arrow enterTouchDelay={5} title="View friends">
+				<IconButton
+					onClick={handleOpen}
+					className={classes.iconButton}
+				>
+					<PeopleIcon />
+				</IconButton>
+			</Tooltip>
 			<Dialog disableBackdropClick disableEscapeKeyDown open={open} onClose={handleClose}>
 				<DialogTitle>Select people to view</DialogTitle>
 				<DialogContent>
 					<FormControl component="fieldset" className={classes.formControl}>
 						<FormGroup>
 							{
-								friendUids.length > 0 ?
-									friendUids.map(uid => {
+								Object.keys(friendsList).length > 0 ?
+									Object.keys(friendsList).map(uid => {
 										const friend = friendsList[uid]
 										return (
 											<FormControlLabel
@@ -148,9 +155,6 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 					</FormControl>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose} color="primary">
-						Cancel
-          			</Button>
 					<Button onClick={handleSubmit} color="primary">
 						Ok
          			</Button>
