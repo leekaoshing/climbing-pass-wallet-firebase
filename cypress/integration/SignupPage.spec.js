@@ -1,52 +1,43 @@
 import { createSelector } from '../utils'
 
-describe('Signup without authentication', () => {
+describe('Signup page without authentication', () => {
   beforeEach(() => {
     cy.logout()
     cy.visit('localhost:3000/signup')
   })
 
-  it('Has link to About page', () => {
-    cy.get(createSelector('about')).click()
-    cy.url().should('include', '/about')
-    // cy.go('back')
+  it('Has links to About and Login pages', () => {
+    cy.get(createSelector('about')).should('exist')
+    cy.get(createSelector('login')).should('exist')
   })
 
-  it('Has link to Login page', () => {
-    // cy.get('.sidebar').scrollTo('bottom')
-    cy.get(createSelector('login')).click()
-    cy.url().should('include', '/login')
-  })
-
-  it('Shows signup Through Google Button', () => {
-    cy.get(createSelector('google-auth-button')).should('exist')
-  })  
+  // it('Shows signup Through Google Button', () => {
+  //   cy.get(createSelector('google-auth-button')).should('exist')
+  // })  
 
   it('Should signup properly', () => {
-    cy.get(createSelector('first-name-field')).type('Peter')
-    cy.get(createSelector('last-name-field')).type('Lim')
-    cy.get(createSelector('email-field')).type('plim@mail.com')
+    cy.get(createSelector('first-name-field')).type('Test')
+    cy.get(createSelector('last-name-field')).type('User')
+    cy.get(createSelector('email-field')).type('testuser@mail.com')
     cy.get(createSelector('password-field')).type('123456')
     cy.get(createSelector('password-confirmation-field')).type('123456')
     cy.get(createSelector('sign-up-button')).click()
 
     cy.url().should('include', '/home')
-
-    // TODO Validate that the home screen is correct
-  })  
+    cy.get(createSelector('user-name-card')).should('contain', 'Test User')
+    cy.get(createSelector('no-passes')).should('contain', 'No passes here yet. Try adding some!')
+    cy.deleteCurrentUser()
+  })
 })
 
-// describe('Signup with authentication', () => {
-//   beforeEach(() => {
-//     cy.login()
-//     cy.visit('localhost:3000/signup')
-//   })
+describe('Signup page with authentication', () => {
+  beforeEach(() => {
+    cy.logout()
+    cy.visit('localhost:3000/signup')
+  })
 
-//   it('should redirect to home', () => {
-//     cy.url().should('include', '/home')
-//   })
-
-//   // TODO Follow sign up process
-// })
-
-// TODO Signup with authentication
+  it('Should redirect to home', () => {
+    cy.login('WjuK3icH37ZC3LjZG6VlN5p4rpw1')
+    cy.url().should('include', '/home')
+  })
+})

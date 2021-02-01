@@ -2,7 +2,7 @@ import { Button, Grid, Link, Paper, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import styles from './AboutPage.styles'
-import { LOGIN_PATH, SIGNUP_PATH } from 'constants/paths'
+import { HOME_PATH, LOGIN_PATH, SIGNUP_PATH } from 'constants/paths'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import homePageGuideUrl from '../../../../static/Home Page Guide.png'
@@ -34,6 +34,7 @@ function AboutPage() {
 						className={classes.guidePhoto}
 						src={homePageGuideUrl}
 						alt=""
+						data-test="image-guide"
 					/>
 					<br />
 					<br />
@@ -58,7 +59,11 @@ function AboutPage() {
                 					</Button>
 								</div>
 								:
-								null
+								<div className={classes.buttonsGroup}>
+									<Button variant="contained" color="primary" className={classes.buttons} onClick={() => history.push(HOME_PATH)} data-test="home-button">
+										Home
+                					</Button>
+								</div>
 						}
 
 					</div>

@@ -1,4 +1,3 @@
-import Chip from '@material-ui/core/Chip'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
@@ -26,10 +25,6 @@ function UserSearch({ userSearchList, loggedInUser }) {
 	const [searchText, setSearchText] = useState('')
 	const [error, setError] = useState('')
 
-	function handleDelete(user) {
-		dispatch(removeUserFromSearchList(user.email))
-	}
-
 	function handleEnter(event) {
 		if (event.key === 'Enter') {
 			handleSearch(searchText)
@@ -56,7 +51,15 @@ function UserSearch({ userSearchList, loggedInUser }) {
 
 			if (loggedInUser.email === searchText) {
 				setSearchText('')
-				dispatch(addUserToSearchList(loggedInUser))
+				dispatch(addUserToSearchList(User.createUser(
+					true,
+					loggedInUser.firstName,
+					loggedInUser.lastName,
+					loggedInUser.email,
+					loggedInUser.uid,
+					loggedInUser.friends,
+					loggedInUser.passes
+				)))
 				return
 			}
 
@@ -114,6 +117,20 @@ function UserSearch({ userSearchList, loggedInUser }) {
 
 			if (userPublicDetails.isSelected) {
 				if (userSearchList[email] === undefined) {
+					if (uid === loggedInUser.uid) {
+						setSearchText('')
+						dispatch(addUserToSearchList(User.createUser(
+							true,
+							loggedInUser.firstName,
+							loggedInUser.lastName,
+							loggedInUser.email,
+							loggedInUser.uid,
+							loggedInUser.friends,
+							loggedInUser.passes
+						)))
+						return
+					}
+
 					firestore.collection(USERS_COLLECTION)
 						.where('email', '==', email) // TODO for future: can't query by UID, need backend to solve probably
 						.where('friends', 'array-contains', loggedInUser.uid)
@@ -121,18 +138,27 @@ function UserSearch({ userSearchList, loggedInUser }) {
 						.then(userDetailsResult => {
 							if (userDetailsResult.empty) {
 								setSearchText('')
-								dispatch(addUserToSearchList({
-									...userPublicDetails,
-									canView: false
-								}))
+								dispatch(addUserToSearchList(User.createUser(
+									false,
+									userPublicDetails.firstName,
+									userPublicDetails.lastName,
+									userPublicDetails.email,
+									userPublicDetails.uid,
+									null,
+									null
+								)))
 							} else {
 								const userDetails = userDetailsResult.docs[0].data()
 								setSearchText('')
-								dispatch(addUserToSearchList({
-									...userPublicDetails,
-									...userDetails,
-									canView: true
-								}))
+								dispatch(addUserToSearchList(User.createUser(
+									true,
+									userPublicDetails.firstName,
+									userPublicDetails.lastName,
+									userPublicDetails.email,
+									userPublicDetails.uid,
+									userDetails.friends,
+									userDetails.passes
+								)))
 							}
 						})
 						.catch(error => showError(error.message))
@@ -162,6 +188,8 @@ function UserSearch({ userSearchList, loggedInUser }) {
 						<IconButton
 							onClick={() => handleSearch(searchText)}
 							className={classes.iconButton}
+							aria-label="Search for person using email"
+							data-test="user-search-button"
 						>
 							<SearchIcon />
 						</IconButton>

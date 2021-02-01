@@ -128,6 +128,8 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 				<IconButton
 					onClick={handleOpen}
 					className={classes.iconButton}
+					aria-label="View friends"
+					data-test="view-friends-button"
 				>
 					<PeopleIcon />
 				</IconButton>
@@ -135,7 +137,7 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 			<Dialog disableBackdropClick disableEscapeKeyDown open={open} onClose={handleClose}>
 				<DialogTitle>Select people to view</DialogTitle>
 				<DialogContent>
-					<FormControl component="fieldset" className={classes.formControl}>
+					<FormControl component="fieldset" className={classes.formControl} data-test="select-friends-form">
 						<FormGroup>
 							{
 								Object.keys(friendsList).length > 0 ?
@@ -143,7 +145,7 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 										const friend = friendsList[uid]
 										return (
 											<FormControlLabel
-												control={<Checkbox checked={friend.isSelected} onChange={handleChange} name={uid} />}
+												control={<Checkbox checked={friend.isSelected} onChange={handleChange} name={uid} data-test="select-friend-checkbox" />}
 												label={`${friend.firstName} ${friend.lastName}` + (uid === loggedInUser.uid ? " (Me)" : "")} key={uid}
 											/>
 										)
@@ -155,7 +157,7 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 					</FormControl>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleSubmit} color="primary">
+					<Button onClick={handleSubmit} color="primary" data-test="view-friends-ok">
 						Ok
          			</Button>
 				</DialogActions>

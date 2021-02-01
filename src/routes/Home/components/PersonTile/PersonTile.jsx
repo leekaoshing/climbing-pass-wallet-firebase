@@ -101,8 +101,8 @@ function PersonTile({ user, editable }) {
 		<Dialog open={showRemoveFriendDialog} onClose={handleCloseRemoveFriendDialog}>
 			<DialogContent>Remove {fullName} from friend list?</DialogContent>
 			<DialogActions>
-				<Button onClick={handleCloseRemoveFriendDialog}>No</Button>
-				<Button onClick={removeFriend}>Yes</Button>
+				<Button onClick={handleCloseRemoveFriendDialog} data-test="close-remove-friends-dialog">No</Button>
+				<Button onClick={removeFriend} data-test="remove-friend-confirmation-button">Yes</Button>
 			</DialogActions>
 		</Dialog>
 	)
@@ -120,7 +120,7 @@ function PersonTile({ user, editable }) {
 								<Typography variant="h6" data-test="user-name-card">{fullName}</Typography>
 							} className={classes.name} />
 							<CardContent className={classes.cardContent}>
-								<p className={classes.textContent}>This person has not added you as a friend yet.</p>
+								<p className={classes.textContent} data-test="not-friend">This person has not added you as a friend yet.</p>
 							</CardContent>
 						</>
 
@@ -133,12 +133,12 @@ function PersonTile({ user, editable }) {
 							:
 							areTheyYourFriend ?
 								<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Remove friend">
-									<IconButton size="small" onClick={handleOpenRemoveFriendDialog}>
+									<IconButton size="small" onClick={handleOpenRemoveFriendDialog} aria-label="Remove person as friend" data-test="remove-friend-button">
 										<PersonAddDisabledIcon fontSize="small" />
 									</IconButton>
 								</Tooltip>
 								:
-								<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Add friend">
+								<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Add friend" aria-label="Add person as friend" data-test="add-friend-button">
 									<IconButton size="small" onClick={addFriend}>
 										<PersonAddIcon color="primary" fontSize="small" />
 									</IconButton>
@@ -149,6 +149,8 @@ function PersonTile({ user, editable }) {
 					<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Remove person">
 						<IconButton size="small"
 							onClick={() => removeUser(user)}
+							aria-label="Remove person from search list"
+							data-test="remove-user-button"
 						>
 							<CancelIcon fontSize="small" />
 						</IconButton>

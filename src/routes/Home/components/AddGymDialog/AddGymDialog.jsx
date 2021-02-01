@@ -41,7 +41,7 @@ function AddGymDialog({ gymsToAdd, addGymFunction }) {
 	return (
 		<>
 			<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Add gym">
-				<IconButton onClick={openAddGymDialog} disabled={isButtonDisabled()}>
+				<IconButton onClick={openAddGymDialog} disabled={isButtonDisabled()} aria-label="Add gym" data-test="add-gym-button">
 					<AddIcon />
 				</IconButton>
 			</Tooltip>
@@ -52,7 +52,7 @@ function AddGymDialog({ gymsToAdd, addGymFunction }) {
 						{
 							Object.keys(gymsToAdd).map(gymId => {
 								return (
-									<ListItem key={`add-gym-list-${gymId}`} button onClick={() => handleSelect(gymId)}>
+									<ListItem key={`add-gym-list-${gymId}`} button onClick={() => handleSelect(gymId)} data-test={`add-gym-${gymId}`}>
 										<ListItemText primary={gymsToAdd[gymId].name} />
 									</ListItem>
 								)

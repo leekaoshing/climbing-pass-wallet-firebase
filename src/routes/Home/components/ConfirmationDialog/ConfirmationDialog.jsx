@@ -50,7 +50,7 @@ function ConfirmationDialog({ isSubmitDisabled, passDifferences, onSubmit }) {
 		<>
 			<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Save changes">
 				<span>
-					<IconButton color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.button}>
+					<IconButton color="primary" onClick={openConfirmationDialog} disabled={isSubmitDisabled} className={classes.button} aria-label="Save changes" data-test="save-changes-button">
 						<SaveIcon />
 					</IconButton>
 				</span>
@@ -62,13 +62,13 @@ function ConfirmationDialog({ isSubmitDisabled, passDifferences, onSubmit }) {
 						{
 							Object.keys(passDifferences).map(gymId => {
 								return (
-									<ListItem key={`confirmation-list-${gymId}`}>
+									<ListItem key={`confirmation-list-${gymId}`} >
 										<ListItemAvatar>
 											<Avatar className={classes.avatar}>
 												{gymId}
 											</Avatar>
 										</ListItemAvatar>
-										<ListItemText primary={getPassDifferenceString(passDifferences[gymId])} />
+										<ListItemText primary={getPassDifferenceString(passDifferences[gymId])} data-test={`confirmation-list-${gymId}`}/>
 									</ListItem>
 								)
 							})
@@ -78,12 +78,14 @@ function ConfirmationDialog({ isSubmitDisabled, passDifferences, onSubmit }) {
 				<DialogActions>
 					<Button
 						onClick={closeConfirmationDialog}
+						data-test="close-confirmation-dialog-button"
 					>
 						No
 					</Button>
 					<Button
 						color="primary"
 						onClick={handleSubmit}
+						data-test="save-changes-confirmation-button"
 					>
 						Yes
 					</Button>

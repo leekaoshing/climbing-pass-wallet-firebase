@@ -27,12 +27,11 @@ function UpdateResultDialog() {
 
 	return (
 		<Dialog open={showUpdateResultDialog} onClose={closeUpdateResultDialog}>
-			{/* <DialogTitle id="confirmation-dialog-title">Update results</DialogTitle> */}
 			<div className={classes.root}>
 				<DialogContent>
 					{
 						updateResult ?
-							<Typography className={classes.text} color={updateResult.success ? 'inherit' : 'error'}>
+							<Typography className={classes.text} color={updateResult.success ? 'inherit' : 'error'} data-test="update-results-message">
 								{updateResult.message}
 							</Typography>
 							:

@@ -34,9 +34,20 @@ Cypress.Commands.add('createUser', async (details) => {
   return user.uid
 })
 
-Cypress.Commands.add('addInfo', () => {
-  console.log('start addinfo')
-  firebase.firestore().collection('users').doc('123abc').set({
+Cypress.Commands.add('deleteCurrentUser', async () => {
+  const user = firebase.auth().currentUser;
+  const uid = user.uid
+
+  user.delete().then(() => {
+    console.debug(`Deleted user '${uid}'`)
+  }).catch((error) => {
+    console.error(error.message)
+  });
+})
+
+Cypress.Commands.add('addInfo', uid => {
+  console.log('start addinfo', uid)
+  firebase.firestore().collection('users').doc(uid).set({
     hello: 'there'
   }).then(() => {
     console.log('added addinfo')

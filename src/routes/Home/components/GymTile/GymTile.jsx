@@ -49,7 +49,7 @@ function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, edit
 						editable ?
 							<>
 								<Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-									<IconButton aria-label="decrementPass" data-test={`decrement-pass-${gymId}`} onClick={() => changePass(gymId, -1)}>
+									<IconButton aria-label="Decrement pass" data-test={`decrement-pass-${gymId}`} onClick={() => changePass(gymId, -1)}>
 										<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Subtract pass">
 											<RemoveIcon className={classes.icons} />
 										</Tooltip>
@@ -59,7 +59,7 @@ function GymTile({ gymId, gymName, gymLink, numberOfPasses, passDifference, edit
 									<span style={getTextStyle()} data-test={`passes-${gymId}`} >{numberOfPasses}</span>
 								</Grid>
 								<Grid item xs={2} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-									<IconButton aria-label="incrementPass" data-test={`increment-pass-${gymId}`} onClick={() => changePass(gymId, 1)}>
+									<IconButton aria-label="Increment pass" data-test={`increment-pass-${gymId}`} onClick={() => changePass(gymId, 1)}>
 										<Tooltip disableFocusListener arrow enterTouchDelay={5} title="Add pass">
 											<AddIcon className={classes.icons} />
 										</Tooltip>

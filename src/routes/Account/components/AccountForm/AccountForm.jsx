@@ -60,6 +60,7 @@ function AccountForm({ account, onSubmit }) {
 					name="email"
 					placeholder="email"
 					margin="normal"
+					data-test="email-field"
 					fullWidth
 					inputRef={register({
 						required: true,
@@ -72,6 +73,7 @@ function AccountForm({ account, onSubmit }) {
 					name="avatarUrl"
 					label="Avatar Url"
 					margin="normal"
+					data-test="avatar-url-field"
 					inputRef={register}
 					fullWidth
 				/>
@@ -86,6 +88,7 @@ function AccountForm({ account, onSubmit }) {
 				color="primary"
 				type="submit"
 				variant="contained"
+				data-test="save-changes-button"
 				disabled={isSubmitting || !isValid}>
 				{isSubmitting ? 'Saving' : 'Save'}
 			</Button>

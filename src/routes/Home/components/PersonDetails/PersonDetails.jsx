@@ -76,7 +76,7 @@ function PersonDetails({ user, editable }) {
 	}
 
 	function submitChanges() {
-		if (firebase.auth().currentUser.email !== user.email) {
+		if (firebase.auth().currentUser.uid !== user.uid) {
 			return
 		}
 
@@ -177,7 +177,7 @@ function PersonDetails({ user, editable }) {
 									}
 								</List>
 								:
-								<p className={classes.noPasses}><b>{editable ? 'No passes here yet. Try adding some!' : 'No passes here yet. Ask them to add some!'}</b></p>
+								<p className={classes.noPasses} data-test="no-passes"><b>{editable ? 'No passes here yet. Try adding some!' : 'No passes here yet. Ask them to add some!'}</b></p>
 						}
 					</div>
 				}
@@ -196,6 +196,8 @@ function PersonDetails({ user, editable }) {
 												<IconButton
 													disabled={hasNoChanges}
 													onClick={resetUserPasses}
+													aria-label="Reset changes"
+													data-test="reset-changes-button"
 												>
 
 													<ReplayIcon />

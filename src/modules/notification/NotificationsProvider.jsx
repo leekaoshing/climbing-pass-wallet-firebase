@@ -42,6 +42,7 @@ export default function NotificationsProvider({ children }) {
           vertical: 'bottom',
           horizontal: 'right'
         }}
+        data-test="notification"
         action={(key) => (
           <IconButton
             key={`close-${key}`}

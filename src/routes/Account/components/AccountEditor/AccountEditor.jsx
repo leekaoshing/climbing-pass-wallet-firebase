@@ -39,13 +39,20 @@ function AccountEditor() {
     const detailsForFirebaseProfile = {
       photoURL: details.avatarUrl
     }
-    Promise.all([
-      firestore.collection(USERS_COLLECTION).doc(auth.uid).update(detailsForFirestore),
-      firebase.auth().currentUser.updateProfile(detailsForFirebaseProfile),
-      firebase.auth().currentUser.updateEmail(emailLowerCase)
-    ])
-      .then(() => showSuccess('Profile updated successfully'))
-      .catch(err => showError(`Error updating profile: ${err.message}`))
+
+    firebase.auth().currentUser.updateEmail(emailLowerCase).then(() => {
+      firebase.auth().currentUser.updateProfile(detailsForFirebaseProfile).then(() => {
+        firestore.collection(USERS_COLLECTION).doc(auth.uid).update(detailsForFirestore).then(() => showSuccess('Profile updated successfully!'))
+      })
+    }).catch(err => showError(`Error updating profile: ${err.message}`))
+    
+    // Promise.all([
+    //   firestore.collection(USERS_COLLECTION).doc(auth.uid).update(detailsForFirestore),
+    //   firebase.auth().currentUser.updateProfile(detailsForFirebaseProfile),
+    //   firebase.auth().currentUser.updateEmail(emailLowerCase)
+    // ])
+    //   .then(() => showSuccess('Profile updated successfully!'))
+    //   .catch(err => showError(`Error updating profile: ${err.message}`))
   }
 
   return (
