@@ -32,7 +32,7 @@
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
     "@babel/preset-env": "^7.11.0",
-    "@babel/register": "^7.10.5",
+    "@babel/register": "^7.12.13",
     "@firebase/testing": "^0.20.10",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-preset-minify": "^0.5.1",
