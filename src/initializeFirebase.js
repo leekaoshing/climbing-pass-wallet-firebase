@@ -2,6 +2,7 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/performance'
+import 'firebase/functions' // <- needed if using httpsCallable
 
 export default function initializeFirebase() {
   const firebaseConfig = {
@@ -22,14 +23,17 @@ export default function initializeFirebase() {
     firebase.analytics()
   }
 
+  // Initialize other services on firebase instance
+  // firebase.functions().settings() // <- needed if using httpsCallable // TODO Verify this
+
   if (window.location.hostname === "localhost") {  // Emulator
     // firebase.firestore().useEmulator("192.168.1.19", 9091)
 
-    firebase.auth().useEmulator('http://192.168.1.19:9099/')
+    firebase.auth().useEmulator(process.env.REACT_APP_AUTH_EMULATOR_HOST)
     // Cypress UI tests go through emulator also if running through UI (not by cy commands)
 
     const firestoreSettings = {
-      host: '192.168.1.19:9091',
+      host: process.env.REACT_APP_FIRESTORE_EMULATOR_HOST,
       ssl: false
     }
     if (window.Cypress) {
@@ -37,8 +41,14 @@ export default function initializeFirebase() {
       console.debug('Using Cypress, set experimentalForceLongPolling=true')
       firestoreSettings.experimentalForceLongPolling = true
     }
-    
+
     firebase.firestore().settings(firestoreSettings)
+    const functionsEmulatorUrlComponents = process.env.REACT_APP_FUNCTIONS_EMULATOR_HOST.split(':')
+    const functionsEmulatorHost = functionsEmulatorUrlComponents.slice(0, 1).join('')
+    const functionsEmulatorPort = functionsEmulatorUrlComponents.slice(2)
+    firebase.functions().useEmulator(functionsEmulatorHost, functionsEmulatorPort)
+  } else { // Not emulator
+    firebase.functions()
   }
 
   // const firestoreSettings = {}

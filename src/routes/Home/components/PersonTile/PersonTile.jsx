@@ -13,13 +13,14 @@ import Typography from '@material-ui/core/Typography'
 import CancelIcon from '@material-ui/icons/Cancel'
 import PersonAddIcon from '@material-ui/icons/PersonAdd'
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled'
-import { USERS_COLLECTION } from 'constants/firebasePaths'
+import { FRIENDS_COLLECTION, USERS_COLLECTION } from 'constants/firebasePaths'
 import { cloneDeep } from 'lodash'
 import { useNotifications } from 'modules/notification'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+	useFirebase,
 	useFirestore
 } from 'react-redux-firebase'
 import { removeUserFromSearchList } from '../../../../store/reducers/user'
@@ -31,6 +32,7 @@ const useStyles = makeStyles(styles)
 
 function PersonTile({ user, editable }) {
 	const dispatch = useDispatch()
+	const firebase = useFirebase()
 	const firestore = useFirestore()
 	const { showError, showSuccess } = useNotifications()
 
@@ -41,16 +43,26 @@ function PersonTile({ user, editable }) {
 	const loggedInUser = useSelector(state => state.firestore.data.users[auth.uid])
 
 	function removeUser(user) {
-		dispatch(removeUserFromSearchList(user.email))
+		dispatch(removeUserFromSearchList(user.uid))
 	}
 
 	function addFriend() {
-		firestore.collection(USERS_COLLECTION).doc(auth.uid).update({
-			friends: [
-				...loggedInUser.friends,
-				user.uid
-			]
-		})
+		Promise.all([
+			firestore.collection(USERS_COLLECTION).doc(auth.uid).update({
+				friends: [
+					...loggedInUser.friends,
+					user.uid
+				]
+			}),
+			
+			// Preemptive code implementing a new collection where { from: ..., to: ... } friend relations are stored
+			firestore.collection(FRIENDS_COLLECTION).add({
+				from: auth.uid,
+				to: user.uid,
+				createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+				active: true
+			})
+		])
 			.then(() => showSuccess(`Successfully added ${user.firstName} ${user.lastName} to friend list.`))
 			.catch(error => showError(error.message))
 	}
@@ -58,9 +70,26 @@ function PersonTile({ user, editable }) {
 	function removeFriend() {
 		const friends = cloneDeep(loggedInUser.friends)
 		friends.splice(friends.indexOf(user.uid), 1)
-		firestore.collection(USERS_COLLECTION).doc(auth.uid).update({
-			friends
-		})
+		Promise.all([
+			firestore.collection(USERS_COLLECTION).doc(auth.uid).update({
+				friends
+			}),
+
+			// Preemptive code implementing a new collection where { from: ..., to: ... } friend relations are stored
+			firestore.collection(FRIENDS_COLLECTION)
+				.where('from', '==', auth.uid)
+				.where('to', '==', user.uid)
+				.where('active', '==', true)
+				.get()
+				.then(querySnapshot => {
+					querySnapshot.forEach(doc => {
+						doc.ref.update({
+							active: false,
+							inactiveAt: firebase.firestore.FieldValue.serverTimestamp(),
+						})
+					})
+				})
+		])
 			.then(() => {
 				showSuccess(`Successfully removed ${user.firstName} ${user.lastName} from friend list.`)
 				handleCloseRemoveFriendDialog()
@@ -120,7 +149,7 @@ function PersonTile({ user, editable }) {
 								<Typography variant="h6" data-test="user-name-card">{fullName}</Typography>
 							} className={classes.name} />
 							<CardContent className={classes.cardContent}>
-								<p className={classes.textContent} data-test="not-friend">This person has not added you as a friend yet.</p>
+								<p className={classes.textContent} data-test="not-friend">This person has not added you as a friend yet. Ask them to add you to view their passes.</p>
 							</CardContent>
 						</>
 

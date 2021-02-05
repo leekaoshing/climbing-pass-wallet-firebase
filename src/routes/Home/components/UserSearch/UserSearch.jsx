@@ -1,9 +1,9 @@
+import { gql, useApolloClient } from '@apollo/client'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/Search'
-import { USERS_COLLECTION, USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
 import { useNotifications } from 'modules/notification'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
@@ -13,6 +13,7 @@ import User from '../../../../model/User'
 import { addUserToSearchList, removeUserFromSearchList } from '../../../../store/reducers/user'
 import ViewFriends from './components/ViewFriends'
 import styles from './UserSearch.styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles(styles)
 
@@ -21,9 +22,11 @@ function UserSearch({ userSearchList, loggedInUser }) {
 	const firestore = useFirestore()
 	const classes = useStyles()
 	const { showError } = useNotifications()
+	const apolloClient = useApolloClient()
 
 	const [searchText, setSearchText] = useState('')
 	const [error, setError] = useState('')
+	const [loading, setLoading] = useState(false)
 
 	function handleEnter(event) {
 		if (event.key === 'Enter') {
@@ -36,10 +39,18 @@ function UserSearch({ userSearchList, loggedInUser }) {
 		setSearchText(event.target.value)
 	}
 
+	function addUserToSearchListHandler(user) {
+		dispatch(addUserToSearchList(user))
+	}
+
+	function isUserAlreadyDisplayed(email) {
+		return Object.values(userSearchList).filter(user => user.email === email).length > 0
+	}
+
 	async function handleSearch(searchText) {
 		if (searchText !== '') {
 			const searchTextLowerCase = searchText.toLowerCase()
-			if (userSearchList[searchTextLowerCase] !== undefined) {
+			if (isUserAlreadyDisplayed(searchText)) {
 				setError('Already displaying this user.')
 				return
 			}
@@ -51,7 +62,7 @@ function UserSearch({ userSearchList, loggedInUser }) {
 
 			if (loggedInUser.email === searchText) {
 				setSearchText('')
-				dispatch(addUserToSearchList(User.createUser(
+				addUserToSearchListHandler(User.createUser(
 					true,
 					loggedInUser.firstName,
 					loggedInUser.lastName,
@@ -59,49 +70,48 @@ function UserSearch({ userSearchList, loggedInUser }) {
 					loggedInUser.uid,
 					loggedInUser.friends,
 					loggedInUser.passes
-				)))
+				))
 				return
 			}
 
-			try {
-				const userPublicDetailsResults = await firestore.collection(USERS_PUBLIC_COLLECTION)
-					.where('email', '==', searchTextLowerCase)
-					.get()
-				if (userPublicDetailsResults.empty) throw new Error('Unable to find user.')
-				const userPublicDetails = userPublicDetailsResults.docs[0].data()
-
-				const userDetailsResults = await firestore.collection(USERS_COLLECTION)
-					.where('email', '==', searchTextLowerCase)
-					.where('friends', 'array-contains', loggedInUser.uid)
-					.get()
-
-				if (userDetailsResults.empty) {
+			setLoading(true)
+			apolloClient.query({
+				query: gql`
+					query GetUser($identifier: String!, $identifierType: String!) { 
+						user(identifier: $identifier, identifierType: $identifierType) {
+							canView
+							firstName
+							lastName
+							email
+							uid
+							passes {
+								gymId
+								number
+							}
+						}
+					}`,
+				variables: { identifier: searchTextLowerCase, identifierType: "email" }
+			})
+				.then(result => {
+					const user = result.data.user
 					setSearchText('')
-					dispatch(addUserToSearchList(User.createUser(
-						false,
-						userPublicDetails.firstName,
-						userPublicDetails.lastName,
-						userPublicDetails.email,
-						userPublicDetails.uid,
-						null,
-						null
-					)))
-				} else {
-					const userDetails = userDetailsResults.docs[0].data()
-					setSearchText('')
-					dispatch(addUserToSearchList(User.createUser(
-						true,
-						userPublicDetails.firstName,
-						userPublicDetails.lastName,
-						userPublicDetails.email,
-						userPublicDetails.uid,
-						userDetails.friends,
-						userDetails.passes
-					)))
-				}
-			} catch (error) {
-				setError(error.message)
-			}
+
+					const passes = {}
+					user.passes.forEach(pass => {
+						passes[pass.gymId] = pass.number
+					})
+					addUserToSearchListHandler(User.createUser(
+						user.canView,
+						user.firstName,
+						user.lastName,
+						user.email,
+						user.uid,
+						[],
+						passes
+					))
+				})
+				.catch(error => setError(error.message))
+				.finally(() => setLoading(false))
 		}
 	}
 
@@ -109,17 +119,18 @@ function UserSearch({ userSearchList, loggedInUser }) {
 		setError('')
 	}
 
-	async function handleViewFriends(friendsList) {
+	function categorizeUids(friendsList) {
+		const uidsToDeselect = []
+		const uidsToSearch = []
+
 		Object.keys(friendsList).forEach(uid => {
 			const userPublicDetails = friendsList[uid]
-
-			const email = userPublicDetails.email
-
 			if (userPublicDetails.isSelected) {
-				if (userSearchList[email] === undefined) {
+				if (userSearchList[uid] === undefined) {
+					// Not in search list, need to fetch their details
+
 					if (uid === loggedInUser.uid) {
-						setSearchText('')
-						dispatch(addUserToSearchList(User.createUser(
+						addUserToSearchListHandler(User.createUser(
 							true,
 							loggedInUser.firstName,
 							loggedInUser.lastName,
@@ -127,45 +138,71 @@ function UserSearch({ userSearchList, loggedInUser }) {
 							loggedInUser.uid,
 							loggedInUser.friends,
 							loggedInUser.passes
-						)))
-						return
+						))
+					} else {
+						uidsToSearch.push(uid)
 					}
-
-					firestore.collection(USERS_COLLECTION)
-						.where('email', '==', email) // TODO for future: can't query by UID, need backend to solve probably
-						.where('friends', 'array-contains', loggedInUser.uid)
-						.get()
-						.then(userDetailsResult => {
-							if (userDetailsResult.empty) {
-								setSearchText('')
-								dispatch(addUserToSearchList(User.createUser(
-									false,
-									userPublicDetails.firstName,
-									userPublicDetails.lastName,
-									userPublicDetails.email,
-									userPublicDetails.uid,
-									null,
-									null
-								)))
-							} else {
-								const userDetails = userDetailsResult.docs[0].data()
-								setSearchText('')
-								dispatch(addUserToSearchList(User.createUser(
-									true,
-									userPublicDetails.firstName,
-									userPublicDetails.lastName,
-									userPublicDetails.email,
-									userPublicDetails.uid,
-									userDetails.friends,
-									userDetails.passes
-								)))
-							}
-						})
-						.catch(error => showError(error.message))
 				}
 			} else {
-				dispatch(removeUserFromSearchList(email))
+				uidsToDeselect.push(uid)
 			}
+		})
+		return [uidsToSearch, uidsToDeselect]
+	}
+
+	async function handleViewFriends(friendsList) {
+		let [uidsToSearch, uidsToDeselect] = categorizeUids(friendsList)
+
+		if (uidsToSearch.length > 0) {
+			apolloClient.query({
+				query: gql`
+					query GetUsers($identifiers: [String!], $identifierType: String!) { 
+						users(identifiers: $identifiers, identifierType: $identifierType) {
+							canView
+							firstName
+							lastName
+							email
+							uid
+							passes {
+								gymId
+								number
+							}
+						}
+					}`,
+				variables: { identifiers: uidsToSearch, identifierType: "uid" }
+			})
+				.then(result => {
+					const users = result.data.users
+					users.forEach(user => {
+						const passes = {}
+						user.passes.forEach(pass => {
+							passes[pass.gymId] = pass.number
+						})
+						addUserToSearchListHandler(User.createUser(
+							user.canView,
+							user.firstName,
+							user.lastName,
+							user.email,
+							user.uid,
+							[],
+							passes
+						))
+						uidsToSearch = uidsToSearch.filter(uid => uid !== user.uid)
+					})
+
+					if (uidsToSearch.length > 0) {
+						const errorNames = []
+						uidsToSearch.forEach(uid => {
+							errorNames.push(`${friendsList[uid].firstName} ${friendsList[uid].lastName}`)
+						})
+						showError(`Unable to find users ${errorNames.join(', ')}.`)
+					}
+				})
+				.catch(error => showError(error.message))
+		}
+
+		uidsToDeselect.forEach(uid => {
+			dispatch(removeUserFromSearchList(uid))
 		})
 	}
 
@@ -191,28 +228,13 @@ function UserSearch({ userSearchList, loggedInUser }) {
 							aria-label="Search for person using email"
 							data-test="user-search-button"
 						>
-							<SearchIcon />
+							{
+								loading ? <CircularProgress /> : <SearchIcon />
+							}
 						</IconButton>
 						<ViewFriends loggedInUser={loggedInUser} handleViewFriends={handleViewFriends} userSearchList={userSearchList} />
 					</div>
 				</div>
-				{/* <div className={classes.users}>
-					{
-						Object.keys(userSearchList).map((email) => {
-							const user = userSearchList[email]
-							const displayText = `${user.firstName} ${user.lastName}`
-							return (
-								<li key={user.email}>
-									<Chip
-										label={displayText}
-										onDelete={() => handleDelete(user)}
-										className={classes.chip}
-									/>
-								</li>
-							)
-						})
-					}
-				</div> */}
 			</Grid>
 		</Grid>
 	)

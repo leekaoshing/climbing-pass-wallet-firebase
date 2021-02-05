@@ -31,22 +31,22 @@ function PassesList({ userSearchList, loggedInUser }) {
 	// const users = a.concat(b).concat(c)
 	// const users = a.concat(b.sort()).concat(c.sort()) // For sorting users alphabetically within each category
 
-	const users = Object.keys(userSearchList)
+	const userUids = Object.keys(userSearchList)
 
 	return (
 		<div className={classes.root}  >
 			<Grid container justify="center">
 				{
-					users.length === 0 ?
+					userUids.length === 0 ?
 						<Typography variant="h6" className={classes.emptyText}>Search for a friend using the box above!</Typography>
 						:
-						users.length === 1 ?
-							<Grid item xs={9} sm={8} md={6} lg={3} xl={3} className={classes.gridItem} key={userSearchList[users[0]].email}>
-								<PersonTile user={userSearchList[users[0]]} editable={isLoggedInUser(userSearchList[users[0]])} />
+						userUids.length === 1 ?
+							<Grid item xs={9} sm={8} md={6} lg={3} xl={3} className={classes.gridItem} key={userSearchList[userUids[0]].email}>
+								<PersonTile user={userSearchList[userUids[0]]} editable={isLoggedInUser(userSearchList[userUids[0]])} />
 							</Grid>
 							:
-							users.map(email => {
-								const user = userSearchList[email]
+							userUids.map(uid => {
+								const user = userSearchList[uid]
 								return (
 									<Grid item xs={6} sm={4} md={4} lg={3} xl={3} className={classes.gridItem} key={user.email}>
 										<PersonTile user={user} editable={isLoggedInUser(user)} />

@@ -22,7 +22,7 @@ describe('About page with authentication', () => {
   })
 
   it('Shows about information', () => {
-    cy.login('WjuK3icH37ZC3LjZG6VlN5p4rpw1')
+    cy.login('HMJnZ9L73HqjMIkvWel8zMMbVTrI')
     cy.get(createSelector('image-guide')).should('exist')
     cy.get(createSelector('email-enquiries-paragraph')).should('exist')
     cy.get(createSelector('log-in-button')).should('not.exist')

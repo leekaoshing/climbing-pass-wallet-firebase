@@ -18,7 +18,7 @@ describe('Account page with authentication', () => {
   })
 
   it('Updates account correctly', () => { // TODO Create setup and teardown so test state is independent
-    cy.login('WjuK3icH37ZC3LjZG6VlN5p4rpw1')
+    cy.login('HMJnZ9L73HqjMIkvWel8zMMbVTrI')
     cy.url().should('include', '/account')
 
     // Change account details
@@ -33,7 +33,7 @@ describe('Account page with authentication', () => {
   })
 
   it('Shows error if trying to change email to one that is already in use', () => { // TODO Create setup and teardown so test state is independent
-    cy.login('WjuK3icH37ZC3LjZG6VlN5p4rpw1')
+    cy.login('HMJnZ9L73HqjMIkvWel8zMMbVTrI')
     cy.url().should('include', '/account')
 
     // Change account details

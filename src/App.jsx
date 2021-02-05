@@ -11,6 +11,8 @@ import SetupMessaging from 'components/SetupMessaging'
 import SetupAnalytics from 'components/SetupAnalytics'
 import { defaultRRFConfig } from './defaultConfig'
 import initializeFirebase from './initializeFirebase'
+import { ApolloProvider } from '@apollo/client'
+import ApolloClient from './initializeApollo'
 
 initializeFirebase()
 
@@ -19,6 +21,7 @@ function App({ routes, store }) {
     <ThemeProvider>
       <Provider store={store}>
         <NotificationsProvider>
+        <ApolloProvider client={ApolloClient}>
           <ReactReduxFirebaseProvider
             firebase={firebase}
             config={defaultRRFConfig}
@@ -29,6 +32,7 @@ function App({ routes, store }) {
               <SetupMessaging />
             </>
           </ReactReduxFirebaseProvider>
+          </ApolloProvider>
         </NotificationsProvider>
       </Provider>
     </ThemeProvider>

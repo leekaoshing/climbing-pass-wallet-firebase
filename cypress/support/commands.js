@@ -4,6 +4,7 @@ import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/firestore'
 import { attachCustomCommands } from 'cypress-firebase'
+import { CodeSharp } from '@material-ui/icons'
 
 const projectId = Cypress.env('FIREBASE_projectId')
 const apiKey = Cypress.env('FIREBASE_apiKey')
@@ -25,7 +26,8 @@ if (firestoreEmulatorHost) {
 
   firebase.firestore().settings({
     host: `${firestoreEmulatorHost}:9091`,
-    ssl: false
+    ssl: false,
+    experimentalForceLongPolling: true
   })
 }
 
@@ -45,15 +47,23 @@ Cypress.Commands.add('deleteCurrentUser', async () => {
   });
 })
 
-Cypress.Commands.add('addInfo', uid => {
+Cypress.Commands.add('addInfo', async uid => {
   console.log('start addinfo', uid)
-  firebase.firestore().collection('users').doc(uid).set({
+  // await firebase.firestore().collection('users').where('email', '==', 'rban@mail.com').get().then(result => {
+  //   console.log('got result')
+  //   result.forEach(doc => {
+  //     console.log('foreach', doc.data())
+  //   })
+  // })
+
+  await firebase.firestore().collection('users').doc(uid).set({
     hello: 'there'
   }).then(() => {
     console.log('added addinfo')
   }).catch(err => {
     console.error('HELP', err.message)
-  })
+  }).finally(() => console.log('FINALLY ADINFO'))
+  return 'hello'
 })
 
 // Custom commands including login, signup, callRtdb, and callFirestore

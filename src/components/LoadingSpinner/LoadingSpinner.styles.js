@@ -4,7 +4,7 @@ export default () => ({
     alignItems: 'center',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    paddingTop: '7rem',
+    padding: '7rem',
     height: '100%'
   },
   progress: {

@@ -7,7 +7,7 @@ import List from '@material-ui/core/List'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import ReplayIcon from '@material-ui/icons/Replay'
-import { USERS_COLLECTION } from 'constants/firebasePaths'
+import { GYMS_DOCUMENT_SINGAPORE, USERS_COLLECTION } from 'constants/firebasePaths'
 import { cloneDeep } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
@@ -32,15 +32,15 @@ function PersonDetails({ user, editable }) {
 	const firestore = useFirestore()
 
 	const classes = useStyles()
-	const gyms = useSelector(state => state.firestore.data.gyms)
+	const singaporeGyms = useSelector(state => state.firestore.data.gyms[GYMS_DOCUMENT_SINGAPORE].gyms) // TODO Change user data model so all the keys are under a map of countries
 	const auth = useSelector(state => state.firebase.auth)
 
 	function getGymsToAdd() {
 		const gymsToAdd = {}
 		const existingGyms = Object.keys(editableUserPasses)
-		Object.keys(gyms).forEach(id => {
+		Object.keys(singaporeGyms).forEach(id => {
 			if (!existingGyms.includes(id)) {
-				gymsToAdd[id] = gyms[id]
+				gymsToAdd[id] = singaporeGyms[id]
 			}
 		})
 		return gymsToAdd
@@ -164,8 +164,8 @@ function PersonDetails({ user, editable }) {
 													{counter !== 1 ? <Divider variant="middle" /> : null}
 													<GymTile
 														gymId={gymId}
-														gymName={gyms[gymId] && gyms[gymId].name}
-														gymLink={(gyms[gymId] && (gyms[gymId].appUrl || gyms[gymId].url)) || 'http://www.google.com'}
+														gymName={singaporeGyms[gymId] && singaporeGyms[gymId].name}
+														gymLink={(singaporeGyms[gymId] && (singaporeGyms[gymId].appUrl || singaporeGyms[gymId].url)) || 'http://www.google.com'}
 														numberOfPasses={numberOfPasses}
 														passDifference={passDifferences[gymId] || 0}
 														editable={editable}

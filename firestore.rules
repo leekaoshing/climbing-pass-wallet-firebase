@@ -14,5 +14,10 @@ service cloud.firestore {
       allow read: if request.auth.uid == user || request.auth.uid in resource.data.friends;
       allow write: if request.auth.uid == user;
     }
+
+    match/friends/{document=**} {
+      allow create: if request.auth.uid == request.resource.data.from;
+      allow read, write: if request.auth.uid == resource.data.from;
+    }
   }
 }

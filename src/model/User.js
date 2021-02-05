@@ -10,19 +10,11 @@ export default class User {
     }
 
     get friends() {
-        if (this.canView) {
-            return this._friends
-        } else {
-            throw new Error('Cannot view this user\'s friends.')
-        }
+        return this.canView ? this._friends : []
     }
 
     get passes() {
-        if (this.canView) {
-            return this._passes
-        } else {
-            throw new Error('Cannot view this user\'s passes.')
-        }
+        return this.canView ? this._passes : {}
     }
 
     static createUser(canView, firstName, lastName, email, uid, friends, passes) {

@@ -37,7 +37,7 @@ describe('Signup page with authentication', () => {
   })
 
   it('Should redirect to home', () => {
-    cy.login('WjuK3icH37ZC3LjZG6VlN5p4rpw1')
+    cy.login('HMJnZ9L73HqjMIkvWel8zMMbVTrI')
     cy.url().should('include', '/home')
   })
 })

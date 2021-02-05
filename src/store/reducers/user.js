@@ -15,7 +15,7 @@ export const userSlice = createSlice({
     // },
     addUserToSearchList: (state, action) => {
       const user = action.payload
-      state.userSearchList[user.email] = user
+      state.userSearchList[user.uid] = user
     },
     removeUserFromSearchList: (state, action) => {
       delete state.userSearchList[action.payload]
@@ -27,7 +27,7 @@ export const userSlice = createSlice({
     },
     updateUserPassesInSearchList: (state, action) => {
       const user = action.payload
-      state.userSearchList[user.email] = user
+      state.userSearchList[user.uid] = user
     },
     setUpdateResult: (state, action) => {
       state.updateResult = action.payload

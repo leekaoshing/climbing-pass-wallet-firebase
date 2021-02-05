@@ -40,7 +40,7 @@ function SignupPage() {
     try {
       const { user } = await firebase.auth().createUserWithEmailAndPassword(newUser.email, form.password)
       await generateUserDocument(user, newUser)
-      await generateUserPublicDocument(user, newUser)
+      // await generateUserPublicDocument(user, newUser)
     } catch (error) {
       showError(error.message)
     }
@@ -61,21 +61,21 @@ function SignupPage() {
     }
   }
 
-  async function generateUserPublicDocument(user, userData) {
-    if (!user) return
-    const userRef = firestore.doc(`${USERS_PUBLIC_COLLECTION}/${user.uid}`)
-    const snapshot = await userRef.get()
+  // async function generateUserPublicDocument(user, userData) {
+  //   if (!user) return
+  //   const userRef = firestore.doc(`${USERS_PUBLIC_COLLECTION}/${user.uid}`)
+  //   const snapshot = await userRef.get()
 
-    if (!snapshot.exists) {
-      await userRef.set({ 
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email, 
-        uid: user.uid })
-    } else {
-      throw new Error('User already exists in database.')
-    }
-  }
+  //   if (!snapshot.exists) {
+  //     await userRef.set({ 
+  //       firstName: userData.firstName,
+  //       lastName: userData.lastName,
+  //       email: userData.email, 
+  //       uid: user.uid })
+  //   } else {
+  //     throw new Error('User already exists in database.')
+  //   }
+  // }
 
   return (
     <div className={classes.root}>

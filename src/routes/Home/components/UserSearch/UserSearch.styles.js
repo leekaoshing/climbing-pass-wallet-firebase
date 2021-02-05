@@ -36,11 +36,12 @@ export default (theme) => ({
     marginTop: theme.spacing(0.2),
     justifyContent: 'center',
     // padding: theme.spacing(0.5),
-    display: 'flex'
+    display: 'flex',
+    alignItems: 'flex-start'
   },
   iconButton: {
-    justifyContent: 'space-between'
-    // marginTop: '6px',
+    justifyContent: 'space-between',
+    marginTop: '3px',
     // marginRight: theme.spacing(1),
     // padding: theme.spacing(0.5),
   }
