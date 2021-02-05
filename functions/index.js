@@ -4,7 +4,13 @@ const admin = require('firebase-admin')
 
 // Initialize firebase-admin so it is available within functions
 try {
-  admin.initializeApp()
+  if (process.env.SERVICE_ACCOUNT_JSON) {
+    admin.initializeApp({
+      credential: admin.credential.cert(process.env.SERVICE_ACCOUNT_JSON)
+    })
+  } else {
+    admin.initializeApp()
+  }
 } catch (err) {
   /* istanbul ignore next: not called in tests */
   console.error(
@@ -30,5 +36,5 @@ files.forEach((functionFile) => {
   // Load single function from default export of function folder's index file
   !process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === folderName // eslint-disable-line no-unused-expressions
     ? (exports[folderName] = require(functionFile).default) // eslint-disable-line global-require
-    : () => {}
+    : () => { }
 })
