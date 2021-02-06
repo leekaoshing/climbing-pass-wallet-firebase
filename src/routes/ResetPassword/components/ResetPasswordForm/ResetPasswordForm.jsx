@@ -1,14 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { useForm } from 'react-hook-form'
+import Button from '@material-ui/core/Button'
+import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
-
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { useHistory } from 'react-router-dom'
 import { validateEmail } from 'utils/form'
 import styles from './ResetPasswordForm.styles'
-import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles(styles)
 

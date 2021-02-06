@@ -16,4 +16,8 @@ export default theme => ({
     minWidth: '250px',
     minHeight: '170px'
   },
+  loginLink: {
+    marginTop: '1rem',
+    fontSize: '1.2rem'
+  },
 })

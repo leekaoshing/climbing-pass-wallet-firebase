@@ -50,7 +50,7 @@ function AddGymDialog({ gymsToAdd, addGymFunction }) {
 				<DialogContent>
 					<List>
 						{
-							Object.keys(gymsToAdd).map(gymId => {
+							Object.keys(gymsToAdd).sort().map(gymId => {
 								return (
 									<ListItem key={`add-gym-list-${gymId}`} button onClick={() => handleSelect(gymId)} data-test={`add-gym-${gymId}`}>
 										<ListItemText primary={gymsToAdd[gymId].name} />

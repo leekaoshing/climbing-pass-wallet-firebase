@@ -1,21 +1,42 @@
+import { ApolloServer } from 'apollo-server-cloud-functions'
+import * as admin from "firebase-admin"
 import * as functions from 'firebase-functions'
-import gqlServer from './server'
+import resolvers from './resolvers'
+import schema from './schema'
 
-const server = gqlServer()
+async function getUidFromToken(token) {
+    if (!token) throw new Error('No token received.')
+    const idToken = token.split('Bearer ')[1]
+    const decodedToken = await admin
+        .auth()
+        .verifyIdToken(idToken)
+    return decodedToken.uid
+}
 
-// /**
-//  * Handle request from calling /graphql endpoint
-//  *
-//  * @param {functions.https.Request} req - Express HTTP Request
-//  * @param {object} res - Express HTTP Response
-//  * @returns {Promise} Resolves after handling request
-//  */
-// export async function graphqlRequest(req, res) {
-//   console.log('request received', { body: req.body })
-//   // Write response to request to end function execution
-//   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
-//   res.end('Hello from graphql')
-// }
+function gqlServer() {
+    const apolloServer = new ApolloServer({
+        typeDefs: schema,
+        resolvers,
+        context: async ({ req }) => {
+            // Get the user token from the headers.
+            const token = req.headers.authorization || ''
+
+            // try to retrieve a user with the token
+            return getUidFromToken(token).then(uid => ({ uid }))
+        },
+
+        // Enable graphiql gui locally
+        // introspection: true,
+        // playground: true
+    })
+
+    return apolloServer.createHandler({
+        cors: {
+            origin: true,
+            credentials: true,
+        },
+    })
+}
 
 /**
  * Cloud Function triggered by HTTP request
@@ -25,4 +46,4 @@ const server = gqlServer()
  * @name graphql
  * @type {functions.CloudFunction}
  */
-export default functions.region('asia-east2').https.onRequest(server)
+export default functions.region('asia-east2').https.onRequest(gqlServer())

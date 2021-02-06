@@ -32,6 +32,7 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 
 	const [friendsList, setFriendsList] = useState({})
 
+	// Add self to friend list for easy viewing
 	useEffect(() => {
 		setFriendsList(friendsList => ({
 			...friendsList,
@@ -44,6 +45,7 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 
 	const [friendsInRedux, setFriendsInRedux] = useState(loggedInUser.friends)
 
+	// Populate friend list with existing friends
 	useEffect(() => {
 		if (friendsInRedux.length > 0) {
 			setLoading(true)
@@ -78,39 +80,7 @@ function ViewFriends({ handleViewFriends, loggedInUser, userSearchList }) {
 		}
 	}, [apolloClient, friendsInRedux, showError])
 
-	// useEffect(() => {
-	// 	const friendsToAdd = {}
-	// 	friendsData && friendsData.users.forEach(friend => {
-	// 		friendsToAdd[friend.uid] = {
-	// 			...friend,
-	// 			isSelected: false
-	// 		}
-	// 	})
-	// 	setFriendsList(friendsList => ({
-	// 		...friendsList,
-	// 		...friendsToAdd
-	// 	}))
-	// }, [friendsData])
-
-	// useEffect(() => {
-	// 	if (friendsInRedux.length > 0) {
-	// 		// firestore.collection(USERS_PUBLIC_COLLECTION).where(firebase.firestore.FieldPath.documentId(), 'in', friendsInRedux)
-	// 		// 	.get()
-	// 		// 	.then(results => {
-	// 		// 		results.forEach(result => {
-	// 		// 			const userPublicData = result.data()
-	// 		// 			setFriendsList(friendsList => ({
-	// 		// 				...friendsList,
-	// 		// 				[userPublicData.uid]: {
-	// 		// 					...userPublicData,
-	// 		// 					isSelected: false
-	// 		// 				}
-	// 		// 			}))
-	// 		// 		})
-	// 		// 	})
-	// 	}
-	// }, [friendsInRedux, firebase.firestore.FieldPath, firestore, firebase])
-
+	// Update friend list when user search list changes (whether checked/unchecked and newly added friends)
 	useEffect(() => {
 		setFriendsList(friendsList => {
 			// Add new friends using details from userSearchList

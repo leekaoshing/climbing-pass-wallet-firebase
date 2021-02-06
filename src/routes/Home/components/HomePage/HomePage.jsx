@@ -1,13 +1,12 @@
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import LoadingSpinner from 'components/LoadingSpinner'
-import { GYMS_COLLECTION, GYMS_DOCUMENT_SINGAPORE, USERS_COLLECTION, USERS_PUBLIC_COLLECTION } from 'constants/firebasePaths'
+import { GYMS_COLLECTION, GYMS_DOCUMENT_SINGAPORE, USERS_COLLECTION } from 'constants/firebasePaths'
 import { useNotifications } from 'modules/notification'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	isLoaded,
-	useFirebase,
 	useFirestore,
 	useFirestoreConnect
 } from 'react-redux-firebase'
@@ -29,10 +28,6 @@ function useHome() {
 			collection: USERS_COLLECTION,
 			doc: auth.uid
 		},
-		// {
-		// 	collection: USERS_PUBLIC_COLLECTION,
-		// 	doc: auth.uid
-		// },
 		{
 			collection: GYMS_COLLECTION,
 			doc: GYMS_DOCUMENT_SINGAPORE
@@ -41,10 +36,9 @@ function useHome() {
 
 	// // Get user from redux state
 	const users = useSelector(({ firestore: { data: { users } } }) => users)
-	const usersPublic = useSelector(({ firestore: { data: { users_public } } }) => users) // eslint-disable-line camelcase
 	const gyms = useSelector(({ firestore: { data: { gyms } } }) => gyms)
 
-	return { users, gyms, usersPublic, uid: auth.uid }
+	return { users, gyms, uid: auth.uid }
 }
 
 function Home() {
@@ -57,7 +51,6 @@ function Home() {
 	const {
 		uid,
 		users,
-		usersPublic,
 		gyms
 	} = useHome()
 
@@ -91,7 +84,7 @@ function Home() {
 		}, 500)
 	}, [dispatch, firestore, uid, showError])
 
-	if (loading || !isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !gyms[GYMS_DOCUMENT_SINGAPORE] || !users[uid] || !usersPublic || !usersPublic[uid]) {
+	if (loading || !isLoaded(users) || !isLoaded(gyms) || !users || !gyms || !gyms[GYMS_DOCUMENT_SINGAPORE] || !users[uid]) {
 		return <LoadingSpinner />
 	}
 
